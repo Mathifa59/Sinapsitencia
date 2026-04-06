@@ -21,7 +21,7 @@ const ROLE_SHORTCUTS: { role: UserRole; label: string; email: string }[] = [
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isLoading } = useAuthStore();
+  const { loginByRole, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,13 +35,14 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormValues) => {
     setError(null);
+    // TODO: cuando el backend esté disponible, usar login({ email: data.email, password: data.password })
     const role = ROLE_SHORTCUTS.find((r) => r.email === data.email)?.role ?? "doctor";
-    await login(role);
+    await loginByRole(role);
     router.push(`/${role}/dashboard`);
   };
 
   const loginAs = async (role: UserRole) => {
-    await login(role);
+    await loginByRole(role);
     router.push(`/${role}/dashboard`);
   };
 

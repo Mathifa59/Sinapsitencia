@@ -1,28 +1,52 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Star, Scale, Send, CheckCircle } from "lucide-react";
-import { mockMatchRecommendations } from "@/mocks/matching";
-import { mockLawyerProfiles } from "@/mocks/users";
+import { Search, Star, Scale, Send, CheckCircle, Loader2 } from "lucide-react";
+import {
+  useMatchRecommendations,
+  useLawyerProfiles,
+  useSendContactRequest,
+} from "@/modules/matching/presentation/hooks/useMatching";
+import { useAuthStore } from "@/store/auth.store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { LawyerProfileEntity } from "@/modules/matching/domain/entities/matching.entity";
 
 export default function DoctorLawyersPage() {
-  const [search, setSearch] = useState("");
-  const [requested, setRequested] = useState<Set<string>>(new Set());
+  const { user } = useAuthStore();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const lawyers = mockLawyerProfiles.filter(
-    (l) =>
-      l.user.name.toLowerCase().includes(search.toLowerCase()) ||
-      l.specialties.some((s) => s.toLowerCase().includes(search.toLowerCase()))
+  const { data: lawyerProfiles = [], isLoading } = useLawyerProfiles();
+  const { data: matchRecommendations = [] } = useMatchRecommendations(user?.id ?? "");
+  const { mutate: sendContactRequest, isPending: isSending } = useSendContactRequest();
+  const [requestedLawyerIds, setRequestedLawyerIds] = useState<Set<string>>(new Set());
+
+  const filteredLawyers = lawyerProfiles.filter(
+    (lawyer) =>
+      lawyer.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lawyer.specialties.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  const getScore = (lawyerId: string) =>
-    mockMatchRecommendations.find((r) => r.lawyerId === lawyerId)?.score;
+  const getMatchScore = (lawyerId: string) =>
+    matchRecommendations.find((rec) => rec.lawyer.id === lawyerId)?.score;
 
-  const getReasons = (lawyerId: string) =>
-    mockMatchRecommendations.find((r) => r.lawyerId === lawyerId)?.reasons ?? [];
+  const getMatchReasons = (lawyerId: string) =>
+    matchRecommendations.find((rec) => rec.lawyer.id === lawyerId)?.reasons ?? [];
+
+  const handleSendContactRequest = (lawyer: LawyerProfileEntity) => {
+    if (!user) return;
+    sendContactRequest(
+      {
+        fromDoctorId: user.id,
+        toLawyerId: lawyer.id,
+        message: `Hola ${lawyer.fullName}, me gustaría contactarle para revisar un caso.`,
+      },
+      {
+        onSuccess: () => setRequestedLawyerIds((prev) => new Set([...prev, lawyer.id])),
+      }
+    );
+  };
 
   return (
     <div className="space-y-5">
@@ -33,31 +57,43 @@ export default function DoctorLawyersPage() {
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-        <Input placeholder="Buscar por nombre o especialidad..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Input
+          placeholder="Buscar por nombre o especialidad..."
+          className="pl-9"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
 
+      {isLoading && (
+        <div className="flex items-center justify-center py-16 text-slate-400">
+          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+          <span>Cargando abogados...</span>
+        </div>
+      )}
+
       <div className="grid md:grid-cols-2 gap-4">
-        {lawyers.map((lawyer) => {
-          const score = getScore(lawyer.id);
-          const reasons = getReasons(lawyer.id);
-          const isRequested = requested.has(lawyer.id);
+        {filteredLawyers.map((lawyer) => {
+          const matchScore = getMatchScore(lawyer.id);
+          const matchReasons = getMatchReasons(lawyer.id);
+          const alreadyRequested = requestedLawyerIds.has(lawyer.id);
 
           return (
             <div key={lawyer.id} className="bg-white rounded-lg border border-slate-200 p-5 space-y-4">
               <div className="flex items-start gap-4">
                 <div className="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center shrink-0 text-white font-bold text-sm">
-                  {lawyer.user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                  {lawyer.fullName.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="font-semibold text-slate-900">{lawyer.user.name}</p>
+                      <p className="font-semibold text-slate-900">{lawyer.fullName}</p>
                       <p className="text-xs text-slate-500">CAB: {lawyer.cab}</p>
                     </div>
-                    {score && (
+                    {matchScore && (
                       <div className="flex items-center gap-1 bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full border border-blue-100 shrink-0">
                         <Scale className="h-3 w-3" />
-                        {score}% match
+                        {matchScore}% match
                       </div>
                     )}
                   </div>
@@ -66,8 +102,8 @@ export default function DoctorLawyersPage() {
 
               <div>
                 <div className="flex flex-wrap gap-1.5 mb-3">
-                  {lawyer.specialties.map((s) => (
-                    <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
+                  {lawyer.specialties.map((specialty) => (
+                    <Badge key={specialty} variant="secondary" className="text-xs">{specialty}</Badge>
                   ))}
                 </div>
                 <div className="flex items-center gap-4 text-xs text-slate-500">
@@ -80,14 +116,14 @@ export default function DoctorLawyersPage() {
                 </div>
               </div>
 
-              {reasons.length > 0 && (
+              {matchReasons.length > 0 && (
                 <div className="bg-slate-50 rounded-md p-3">
                   <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Por qué es compatible</p>
                   <ul className="space-y-1">
-                    {reasons.map((r) => (
-                      <li key={r} className="flex items-start gap-1.5 text-xs text-slate-600">
+                    {matchReasons.map((reason) => (
+                      <li key={reason} className="flex items-start gap-1.5 text-xs text-slate-600">
                         <CheckCircle className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                        {r}
+                        {reason}
                       </li>
                     ))}
                   </ul>
@@ -99,13 +135,13 @@ export default function DoctorLawyersPage() {
               )}
 
               <Button
-                variant={isRequested ? "secondary" : "primary"}
+                variant={alreadyRequested ? "secondary" : "primary"}
                 size="sm"
                 className="w-full gap-2"
-                onClick={() => setRequested((prev) => new Set([...prev, lawyer.id]))}
-                disabled={isRequested}
+                onClick={() => handleSendContactRequest(lawyer)}
+                disabled={alreadyRequested || isSending}
               >
-                {isRequested ? (
+                {alreadyRequested ? (
                   <><CheckCircle className="h-4 w-4" />Solicitud enviada</>
                 ) : (
                   <><Send className="h-4 w-4" />Solicitar contacto</>

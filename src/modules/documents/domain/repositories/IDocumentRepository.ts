@@ -1,0 +1,25 @@
+import type { DocumentEntity, DocumentStatus, DocumentType } from "../entities/document.entity";
+
+export interface DocumentFilters {
+  status?: DocumentStatus;
+  type?: DocumentType;
+  patientId?: string;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface PaginatedDocuments {
+  data: DocumentEntity[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface IDocumentRepository {
+  findAll(filters?: DocumentFilters): Promise<PaginatedDocuments>;
+  findById(id: string): Promise<DocumentEntity | null>;
+  findByAuthor(authorId: string, filters?: DocumentFilters): Promise<PaginatedDocuments>;
+  updateStatus(id: string, status: DocumentStatus): Promise<DocumentEntity>;
+}

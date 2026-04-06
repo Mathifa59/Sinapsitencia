@@ -1,9 +1,17 @@
 import type { DocumentType, DocumentStatus, CaseStatus, CasePriority, ConsentStatus, UserRole } from "@/types";
 
+/** Etiqueta corta del rol (para badges, tablas, listas) */
 export const ROLE_LABELS: Record<UserRole, string> = {
   doctor: "Médico",
   lawyer: "Abogado",
   admin: "Administrador",
+};
+
+/** Nombre del portal según rol (para el sidebar y navegación) */
+export const ROLE_PORTAL_LABELS: Record<UserRole, string> = {
+  doctor: "Portal Médico",
+  lawyer: "Portal Legal",
+  admin: "Administración",
 };
 
 export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
@@ -80,7 +88,13 @@ export const LEGAL_SPECIALTIES = [
   "Consentimiento Informado",
 ];
 
-export const NAVIGATION_DOCTOR = [
+export interface NavigationItem {
+  label: string;
+  href: string;
+  icon: string;
+}
+
+export const NAVIGATION_DOCTOR: NavigationItem[] = [
   { label: "Dashboard", href: "/doctor/dashboard", icon: "LayoutDashboard" },
   { label: "Mis Casos", href: "/doctor/cases", icon: "Briefcase" },
   { label: "Documentos", href: "/doctor/documents", icon: "FileText" },
@@ -88,14 +102,14 @@ export const NAVIGATION_DOCTOR = [
   { label: "Mi Perfil", href: "/doctor/profile", icon: "User" },
 ];
 
-export const NAVIGATION_LAWYER = [
+export const NAVIGATION_LAWYER: NavigationItem[] = [
   { label: "Dashboard", href: "/lawyer/dashboard", icon: "LayoutDashboard" },
   { label: "Solicitudes", href: "/lawyer/requests", icon: "Bell" },
   { label: "Médicos", href: "/lawyer/doctors", icon: "Stethoscope" },
   { label: "Mi Perfil", href: "/lawyer/profile", icon: "User" },
 ];
 
-export const NAVIGATION_ADMIN = [
+export const NAVIGATION_ADMIN: NavigationItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "LayoutDashboard" },
   { label: "Usuarios", href: "/admin/users", icon: "Users" },
   { label: "Pacientes", href: "/admin/patients", icon: "Heart" },

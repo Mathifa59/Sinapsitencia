@@ -10,6 +10,13 @@ import {
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/store/ui.store";
 import { useAuthStore } from "@/store/auth.store";
+import {
+  NAVIGATION_DOCTOR,
+  NAVIGATION_LAWYER,
+  NAVIGATION_ADMIN,
+  ROLE_PORTAL_LABELS,
+} from "@/constants";
+import type { NavigationItem } from "@/constants";
 import type { UserRole } from "@/types";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -18,34 +25,10 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   FolderOpen, ShieldCheck,
 };
 
-const NAV_ITEMS: Record<UserRole, { label: string; href: string; icon: string }[]> = {
-  doctor: [
-    { label: "Dashboard", href: "/doctor/dashboard", icon: "LayoutDashboard" },
-    { label: "Mis Casos", href: "/doctor/cases", icon: "Briefcase" },
-    { label: "Documentos", href: "/doctor/documents", icon: "FileText" },
-    { label: "Abogados", href: "/doctor/lawyers", icon: "Scale" },
-    { label: "Mi Perfil", href: "/doctor/profile", icon: "User" },
-  ],
-  lawyer: [
-    { label: "Dashboard", href: "/lawyer/dashboard", icon: "LayoutDashboard" },
-    { label: "Solicitudes", href: "/lawyer/requests", icon: "Bell" },
-    { label: "Médicos", href: "/lawyer/doctors", icon: "Stethoscope" },
-    { label: "Mi Perfil", href: "/lawyer/profile", icon: "User" },
-  ],
-  admin: [
-    { label: "Dashboard", href: "/admin/dashboard", icon: "LayoutDashboard" },
-    { label: "Usuarios", href: "/admin/users", icon: "Users" },
-    { label: "Pacientes", href: "/admin/patients", icon: "Heart" },
-    { label: "Episodios", href: "/admin/episodes", icon: "Activity" },
-    { label: "Documentos", href: "/admin/documents", icon: "FolderOpen" },
-    { label: "Auditoría", href: "/admin/audit", icon: "ShieldCheck" },
-  ],
-};
-
-const ROLE_LABELS: Record<UserRole, string> = {
-  doctor: "Portal Médico",
-  lawyer: "Portal Legal",
-  admin: "Administración",
+const NAV_ITEMS: Record<UserRole, NavigationItem[]> = {
+  doctor: NAVIGATION_DOCTOR,
+  lawyer: NAVIGATION_LAWYER,
+  admin: NAVIGATION_ADMIN,
 };
 
 export function Sidebar() {
@@ -79,7 +62,7 @@ export function Sidebar() {
         <div className="flex items-center justify-between h-16 px-6 border-b border-slate-700">
           <div>
             <span className="font-bold text-white text-lg tracking-tight">Sinapsistencia</span>
-            <p className="text-xs text-slate-400 mt-0.5">{ROLE_LABELS[role]}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{ROLE_PORTAL_LABELS[role]}</p>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
