@@ -1,0 +1,92 @@
+import type { LegalCase, Patient } from "@/types";
+import { mockDoctorProfiles, mockLawyerProfiles } from "./users";
+
+export const mockPatients: Patient[] = [
+  {
+    id: "p1",
+    dni: "45123789",
+    name: "Roberto",
+    lastName: "Mendoza Quispe",
+    birthDate: "1978-06-14",
+    gender: "M",
+    phone: "+51 943 210 987",
+    email: "r.mendoza@gmail.com",
+    address: "Jr. Los Pinos 234, San Borja, Lima",
+    bloodType: "O+",
+    createdAt: "2024-03-10T10:00:00Z",
+  },
+  {
+    id: "p2",
+    dni: "38901234",
+    name: "Carmen",
+    lastName: "Huanca Villanueva",
+    birthDate: "1965-11-28",
+    gender: "F",
+    phone: "+51 932 109 876",
+    bloodType: "A-",
+    createdAt: "2024-02-20T09:00:00Z",
+  },
+  {
+    id: "p3",
+    dni: "52340178",
+    name: "Luis",
+    lastName: "Paredes Sánchez",
+    birthDate: "1990-03-07",
+    gender: "M",
+    phone: "+51 921 098 765",
+    email: "l.paredes@gmail.com",
+    bloodType: "B+",
+    createdAt: "2024-04-01T11:00:00Z",
+  },
+];
+
+export const mockCases: LegalCase[] = [
+  {
+    id: "c1",
+    title: "Reclamación post-operatoria – Colecistectomía",
+    description:
+      "Paciente refiere complicaciones post-quirúrgicas no informadas adecuadamente durante el proceso de consentimiento.",
+    status: "activo",
+    priority: "alta",
+    doctorId: "dp1",
+    doctor: mockDoctorProfiles[0],
+    lawyerId: "lp1",
+    lawyer: mockLawyerProfiles[0],
+    patientId: "p1",
+    patient: mockPatients[0],
+    documents: [],
+    createdAt: "2025-01-10T10:00:00Z",
+    updatedAt: "2025-03-15T14:30:00Z",
+    notes: "Se han recibido copias de la historia clínica y el consentimiento informado original.",
+  },
+  {
+    id: "c2",
+    title: "Queja por diagnóstico tardío – Insuficiencia cardíaca",
+    description:
+      "Familiar del paciente alega que el diagnóstico de insuficiencia cardíaca fue tardío y causó deterioro del estado de salud.",
+    status: "en_revision",
+    priority: "media",
+    doctorId: "dp1",
+    doctor: mockDoctorProfiles[0],
+    patientId: "p2",
+    patient: mockPatients[1],
+    documents: [],
+    createdAt: "2025-02-05T09:00:00Z",
+    updatedAt: "2025-03-20T10:00:00Z",
+  },
+  {
+    id: "c3",
+    title: "Consentimiento informado incompleto – Procedimiento endoscópico",
+    description:
+      "Revisión de consentimiento informado previo a endoscopía. Documentación incompleta detectada.",
+    status: "nuevo",
+    priority: "media",
+    doctorId: "dp1",
+    doctor: mockDoctorProfiles[0],
+    patientId: "p3",
+    patient: mockPatients[2],
+    documents: [],
+    createdAt: "2025-03-28T08:30:00Z",
+    updatedAt: "2025-03-28T08:30:00Z",
+  },
+];
