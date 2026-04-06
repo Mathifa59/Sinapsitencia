@@ -27,6 +27,7 @@ export interface CreateCaseInput {
 }
 
 export interface ICaseRepository {
+  findAll(filters?: CaseFilters): Promise<PaginatedCases>;
   findByDoctorId(doctorId: string, filters?: CaseFilters): Promise<PaginatedCases>;
   findById(id: string): Promise<LegalCaseEntity | null>;
   create(data: CreateCaseInput): Promise<LegalCaseEntity>;

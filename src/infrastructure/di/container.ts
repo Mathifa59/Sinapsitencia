@@ -20,6 +20,7 @@ import { MockDocumentRepository } from "@/modules/documents/infrastructure/repos
 import { MockMatchingRepository } from "@/modules/matching/infrastructure/repositories/MockMatchingRepository";
 import { MockAuditRepository }    from "@/modules/audit/infrastructure/repositories/MockAuditRepository";
 import { MockUserRepository }     from "@/modules/users/infrastructure/repositories/MockUserRepository";
+import { MockPatientRepository }  from "@/modules/patients/infrastructure/repositories/MockPatientRepository";
 
 // Instancias singleton — los mocks mantienen estado en memoria durante la sesión
 export const authRepository     = new MockAuthRepository();
@@ -28,3 +29,4 @@ export const documentRepository = new MockDocumentRepository();
 export const matchingRepository = new MockMatchingRepository();
 export const auditRepository    = new MockAuditRepository();
 export const userRepository     = new MockUserRepository();
+export const patientRepository  = new MockPatientRepository();

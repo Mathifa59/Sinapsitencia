@@ -55,6 +55,36 @@ function toEntity(raw: (typeof mockCases)[0]): LegalCaseEntity {
 export class MockCaseRepository implements ICaseRepository {
   private cases: LegalCaseEntity[] = mockCases.map(toEntity);
 
+  async findAll(filters?: CaseFilters): Promise<PaginatedCases> {
+    await new Promise((r) => setTimeout(r, 300));
+
+    let data = [...this.cases];
+
+    if (filters?.status) data = data.filter((c) => c.status === filters.status);
+    if (filters?.priority) data = data.filter((c) => c.priority === filters.priority);
+    if (filters?.search) {
+      const query = filters.search.toLowerCase();
+      data = data.filter(
+        (c) =>
+          c.title.toLowerCase().includes(query) ||
+          c.patient?.fullName.toLowerCase().includes(query)
+      );
+    }
+
+    const page = filters?.page ?? 1;
+    const pageSize = filters?.pageSize ?? 20;
+    const total = data.length;
+    const paginated = data.slice((page - 1) * pageSize, page * pageSize);
+
+    return {
+      data: paginated,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize) || 1,
+    };
+  }
+
   async findByDoctorId(
     doctorId: string,
     filters?: CaseFilters
