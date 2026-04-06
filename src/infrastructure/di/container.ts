@@ -3,30 +3,26 @@
  *
  * Este es el ÚNICO lugar donde se decide qué implementación de repositorio usar.
  *
- * HOY → MockXxxRepository (datos en memoria)
- * MAÑANA → ApiXxxRepository (llamadas REST reales)
+ * AHORA → ApiXxxRepository (llamadas a /api/* routes con mock data detrás)
+ * FUTURO → Mismo ApiXxxRepository apuntando a Spring Boot real
  *
- * Para migrar un módulo a la API real, solo cambia la importación aquí.
+ * Para migrar a un backend real, solo se cambian las URLs base en apiFetch.
  * Ningún hook, page, ni caso de uso necesita modificarse.
- *
- * Ejemplo de migración futura:
- *   import { ApiCaseRepository } from "@/modules/cases/infrastructure/repositories/ApiCaseRepository";
- *   export const caseRepository = new ApiCaseRepository(apiClient);
  */
 
-import { MockAuthRepository }     from "@/modules/auth/infrastructure/repositories/MockAuthRepository";
-import { MockCaseRepository }     from "@/modules/cases/infrastructure/repositories/MockCaseRepository";
-import { MockDocumentRepository } from "@/modules/documents/infrastructure/repositories/MockDocumentRepository";
-import { MockMatchingRepository } from "@/modules/matching/infrastructure/repositories/MockMatchingRepository";
-import { MockAuditRepository }    from "@/modules/audit/infrastructure/repositories/MockAuditRepository";
-import { MockUserRepository }     from "@/modules/users/infrastructure/repositories/MockUserRepository";
-import { MockPatientRepository }  from "@/modules/patients/infrastructure/repositories/MockPatientRepository";
+import { ApiAuthRepository }     from "@/modules/auth/infrastructure/repositories/ApiAuthRepository";
+import { ApiCaseRepository }     from "@/modules/cases/infrastructure/repositories/ApiCaseRepository";
+import { ApiDocumentRepository } from "@/modules/documents/infrastructure/repositories/ApiDocumentRepository";
+import { ApiMatchingRepository } from "@/modules/matching/infrastructure/repositories/ApiMatchingRepository";
+import { ApiAuditRepository }    from "@/modules/audit/infrastructure/repositories/ApiAuditRepository";
+import { ApiUserRepository }     from "@/modules/users/infrastructure/repositories/ApiUserRepository";
+import { ApiPatientRepository }  from "@/modules/patients/infrastructure/repositories/ApiPatientRepository";
 
-// Instancias singleton — los mocks mantienen estado en memoria durante la sesión
-export const authRepository     = new MockAuthRepository();
-export const caseRepository     = new MockCaseRepository();
-export const documentRepository = new MockDocumentRepository();
-export const matchingRepository = new MockMatchingRepository();
-export const auditRepository    = new MockAuditRepository();
-export const userRepository     = new MockUserRepository();
-export const patientRepository  = new MockPatientRepository();
+// Instancias singleton — todos consumen /api/* routes
+export const authRepository     = new ApiAuthRepository();
+export const caseRepository     = new ApiCaseRepository();
+export const documentRepository = new ApiDocumentRepository();
+export const matchingRepository = new ApiMatchingRepository();
+export const auditRepository    = new ApiAuditRepository();
+export const userRepository     = new ApiUserRepository();
+export const patientRepository  = new ApiPatientRepository();

@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { loginUseCase } from "../../domain/use-cases/login.use-case";
+import { setAuthCookie, clearAuthCookie } from "@/lib/auth-cookie";
 import type { UserEntity, UserRole } from "../../domain/entities/session.entity";
 import type { LoginCredentials } from "../../domain/repositories/IAuthRepository";
 
@@ -37,6 +38,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const repository = await getAuthRepository();
           const session = await loginUseCase(repository, credentials);
+          setAuthCookie(session.user.role);
           set({
             user: session.user,
             token: session.token,
@@ -57,6 +59,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const repository = await getAuthRepository();
           const session = await repository.loginByRole(role);
+          setAuthCookie(session.user.role);
           set({
             user: session.user,
             token: session.token,
@@ -70,6 +73,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        clearAuthCookie();
         set({ user: null, token: null, isAuthenticated: false, error: null });
       },
 
