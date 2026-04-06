@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Plus, Search, Briefcase } from "lucide-react";
 import { useCases } from "@/modules/cases/presentation/hooks/useCases";
 import { CaseStatusBadge, CasePriorityBadge } from "@/modules/cases/presentation/components/CaseStatusBadge";
+import { CaseFormModal } from "@/modules/cases/presentation/components/CaseFormModal";
 import { useAuthStore } from "@/store/auth.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ import { formatDate } from "@/lib/utils";
 export default function DoctorCasesPage() {
   const { user } = useAuthStore();
   const [search, setSearch] = useState("");
+  const [isNewCaseModalOpen, setIsNewCaseModalOpen] = useState(false);
 
   const { data, isLoading } = useCases(user?.id ?? "", { search });
   const cases = data?.data ?? [];
@@ -24,7 +26,9 @@ export default function DoctorCasesPage() {
           <h1 className="text-2xl font-bold text-slate-900">Mis Casos</h1>
           <p className="text-slate-500 text-sm mt-1">{data?.total ?? 0} casos registrados</p>
         </div>
-        <Button variant="primary" size="sm" className="gap-2"><Plus className="h-4 w-4" />Nuevo caso</Button>
+        <Button variant="primary" size="sm" className="gap-2" onClick={() => setIsNewCaseModalOpen(true)}>
+          <Plus className="h-4 w-4" />Nuevo caso
+        </Button>
       </div>
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -75,6 +79,8 @@ export default function DoctorCasesPage() {
           </tbody>
         </table>
       </div>
+
+      <CaseFormModal open={isNewCaseModalOpen} onClose={() => setIsNewCaseModalOpen(false)} />
     </div>
   );
 }

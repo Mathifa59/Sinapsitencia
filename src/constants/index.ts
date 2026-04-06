@@ -1,4 +1,4 @@
-import type { DocumentType, DocumentStatus, CaseStatus, CasePriority, ConsentStatus, UserRole } from "@/types";
+import type { DocumentType, DocumentStatus, CaseStatus, CasePriority, ConsentStatus, UserRole, AuditAction } from "@/types";
 
 /** Etiqueta corta del rol (para badges, tablas, listas) */
 export const ROLE_LABELS: Record<UserRole, string> = {
@@ -108,6 +108,43 @@ export const NAVIGATION_LAWYER: NavigationItem[] = [
   { label: "Médicos", href: "/lawyer/doctors", icon: "Stethoscope" },
   { label: "Mi Perfil", href: "/lawyer/profile", icon: "User" },
 ];
+
+// ─── Audit ────────────────────────────────────────────────────────────────────
+
+export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
+  login: "Inicio de sesión",
+  logout: "Cierre de sesión",
+  create: "Registro creado",
+  update: "Registro actualizado",
+  delete: "Registro eliminado",
+  view: "Consulta",
+  sign: "Firma",
+  download: "Descarga",
+  share: "Compartido",
+};
+
+export const AUDIT_ACTION_BADGE_VARIANT: Record<
+  AuditAction,
+  "info" | "success" | "warning" | "destructive" | "secondary" | "outline"
+> = {
+  login: "success",
+  logout: "secondary",
+  create: "info",
+  update: "warning",
+  delete: "destructive",
+  view: "outline",
+  sign: "success",
+  download: "secondary",
+  share: "info",
+};
+
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+export const ROLE_BADGE_VARIANT: Record<UserRole, "info" | "secondary" | "warning"> = {
+  doctor: "info",
+  lawyer: "secondary",
+  admin: "warning",
+};
 
 export const NAVIGATION_ADMIN: NavigationItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "LayoutDashboard" },

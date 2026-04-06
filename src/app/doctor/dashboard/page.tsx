@@ -9,8 +9,9 @@ import { useCases } from "@/modules/cases/presentation/hooks/useCases";
 import { useDocuments } from "@/modules/documents/presentation/hooks/useDocuments";
 import { useMatchRecommendations } from "@/modules/matching/presentation/hooks/useMatching";
 import { useAuditLogs } from "@/modules/audit/presentation/hooks/useAuditLogs";
+import { isActiveCase } from "@/modules/cases/domain/entities/legal-case.entity";
 import { useAuthStore } from "@/store/auth.store";
-import { formatDateTime } from "@/lib/utils";
+import { formatDateTime, getInitials } from "@/lib/utils";
 
 export default function DoctorDashboardPage() {
   const { user } = useAuthStore();
@@ -23,7 +24,7 @@ export default function DoctorDashboardPage() {
 
   const cases       = casesData?.data ?? [];
   const docs        = docsData?.data ?? [];
-  const activeCases = cases.filter((c) => c.status === "activo" || c.status === "en_revision");
+  const activeCases = cases.filter(isActiveCase);
   const pendingDocs = docs.filter((d) => d.status === "pendiente_firma" || d.status === "borrador");
   const recentLogs  = auditData?.data ?? [];
 
@@ -85,7 +86,7 @@ export default function DoctorDashboardPage() {
           {recentLogs.map((log) => (
             <div key={log.id} className="flex items-center gap-4 px-5 py-3">
               <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                <span className="text-xs font-bold text-slate-500">{log.userName.split(" ").map((n: string) => n[0]).slice(0,2).join("")}</span>
+                <span className="text-xs font-bold text-slate-500">{getInitials(log.userName)}</span>
               </div>
               <p className="text-sm text-slate-700 flex-1">{log.description}</p>
               <p className="text-xs text-slate-400 shrink-0">{formatDateTime(log.createdAt)}</p>

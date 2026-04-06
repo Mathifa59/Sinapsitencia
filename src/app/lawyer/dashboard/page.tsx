@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
   useContactRequestsForLawyer,
   useDoctorProfiles,
+  useRespondContactRequest,
 } from "@/modules/matching/presentation/hooks/useMatching";
 import { useAuthStore } from "@/store/auth.store";
 import { formatDateTime } from "@/lib/utils";
@@ -24,6 +25,7 @@ export default function LawyerDashboardPage() {
   const { user } = useAuthStore();
   const { data: allRequests = [], isLoading: isLoadingRequests } = useContactRequestsForLawyer(user?.id ?? "");
   const { data: doctorProfiles = [] } = useDoctorProfiles();
+  const { mutate: respondToRequest, isPending: isResponding } = useRespondContactRequest(user?.id ?? "");
 
   const pendingRequests = allRequests.filter((req) => req.status === "pendiente");
   const acceptedRequests = allRequests.filter((req) => req.status === "aceptado");
@@ -99,10 +101,22 @@ export default function LawyerDashboardPage() {
                   <p className="text-xs text-slate-600 line-clamp-2">{request.message}</p>
                   <p className="text-xs text-slate-400">{formatDateTime(request.createdAt)}</p>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="primary" className="gap-1.5 text-xs flex-1">
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      className="gap-1.5 text-xs flex-1"
+                      disabled={isResponding}
+                      onClick={() => respondToRequest({ requestId: request.id, status: "aceptado" })}
+                    >
                       <CheckCircle className="h-3.5 w-3.5" />Aceptar
                     </Button>
-                    <Button size="sm" variant="outline" className="gap-1.5 text-xs flex-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1.5 text-xs flex-1"
+                      disabled={isResponding}
+                      onClick={() => respondToRequest({ requestId: request.id, status: "rechazado" })}
+                    >
                       <XCircle className="h-3.5 w-3.5" />Rechazar
                     </Button>
                   </div>

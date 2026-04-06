@@ -4,19 +4,9 @@ import { use } from "react";
 import Link from "next/link";
 import { ArrowLeft, FileText, User, Scale, Calendar, AlertTriangle, Loader2 } from "lucide-react";
 import { useCaseDetail } from "@/modules/cases/presentation/hooks/useCaseDetail";
-import { Badge } from "@/components/ui/badge";
+import { CaseStatusBadge, CasePriorityBadge } from "@/modules/cases/presentation/components/CaseStatusBadge";
 import { Button } from "@/components/ui/button";
 import { formatDate, formatDateTime } from "@/lib/utils";
-import { CASE_STATUS_LABELS, CASE_PRIORITY_LABELS } from "@/constants";
-import type { CaseStatus, CasePriority } from "@/modules/cases/domain/entities/legal-case.entity";
-
-const STATUS_VARIANT: Record<CaseStatus, "info" | "warning" | "success" | "secondary" | "outline"> = {
-  nuevo: "info", en_revision: "warning", activo: "success", cerrado: "secondary", archivado: "outline",
-};
-
-const PRIORITY_VARIANT: Record<CasePriority, "destructive" | "warning" | "secondary" | "outline"> = {
-  critica: "destructive", alta: "warning", media: "secondary", baja: "outline",
-};
 
 export default function CaseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -56,8 +46,8 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
           <p className="text-sm text-slate-500">Caso #{legalCase.id.toUpperCase()}</p>
         </div>
         <div className="flex gap-2">
-          <Badge variant={STATUS_VARIANT[legalCase.status]}>{CASE_STATUS_LABELS[legalCase.status]}</Badge>
-          <Badge variant={PRIORITY_VARIANT[legalCase.priority]}>{CASE_PRIORITY_LABELS[legalCase.priority]}</Badge>
+          <CaseStatusBadge status={legalCase.status} />
+          <CasePriorityBadge priority={legalCase.priority} />
         </div>
       </div>
 

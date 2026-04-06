@@ -6,16 +6,7 @@ import { useAuditLogs } from "@/modules/audit/presentation/hooks/useAuditLogs";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { formatDateTime } from "@/lib/utils";
-import type { AuditAction } from "@/modules/audit/domain/entities/audit-log.entity";
-
-const ACTION_LABELS: Record<AuditAction, string> = {
-  login: "Login", logout: "Logout", create: "Creado", update: "Actualizado",
-  delete: "Eliminado", view: "Consulta", sign: "Firma", download: "Descarga", share: "Compartido",
-};
-const ACTION_VARIANT: Record<AuditAction, "info" | "success" | "warning" | "destructive" | "secondary" | "outline"> = {
-  login: "success", logout: "secondary", create: "info", update: "warning",
-  delete: "destructive", view: "outline", sign: "success", download: "secondary", share: "info",
-};
+import { AUDIT_ACTION_LABELS, AUDIT_ACTION_BADGE_VARIANT } from "@/constants";
 
 export default function AdminAuditPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -69,8 +60,8 @@ export default function AdminAuditPage() {
               {auditLogs.map((auditLog) => (
                 <tr key={auditLog.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-5 py-4">
-                    <Badge variant={ACTION_VARIANT[auditLog.action]} className="whitespace-nowrap">
-                      {ACTION_LABELS[auditLog.action]}
+                    <Badge variant={AUDIT_ACTION_BADGE_VARIANT[auditLog.action]} className="whitespace-nowrap">
+                      {AUDIT_ACTION_LABELS[auditLog.action]}
                     </Badge>
                   </td>
                   <td className="px-5 py-4 text-slate-700 max-w-xs">

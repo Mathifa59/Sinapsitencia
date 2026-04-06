@@ -85,16 +85,21 @@ export class MockPatientRepository implements IPatientRepository {
     await new Promise((r) => setTimeout(r, 300));
     const idx = this.patients.findIndex((p) => p.id === id);
     if (idx === -1) throw new Error(`Paciente "${id}" no encontrado`);
-    const updated = { ...this.patients[idx] };
-    if (input.name || input.lastName) {
-      const [currentFirst] = updated.fullName.split(" ");
-      updated.fullName = `${input.name ?? currentFirst} ${input.lastName ?? ""}`.trim();
-    }
-    if (input.phone !== undefined) updated.phone = input.phone;
-    if (input.email !== undefined) updated.email = input.email;
-    if (input.address !== undefined) updated.address = input.address;
-    if (input.bloodType !== undefined) updated.bloodType = input.bloodType;
-    this.patients[idx] = updated;
-    return updated;
+
+    const current = this.patients[idx];
+    const updatedFullName =
+      input.name || input.lastName
+        ? `${input.name ?? ""} ${input.lastName ?? ""}`.trim() || current.fullName
+        : current.fullName;
+
+    this.patients[idx] = {
+      ...current,
+      fullName: updatedFullName,
+      ...(input.phone !== undefined && { phone: input.phone }),
+      ...(input.email !== undefined && { email: input.email }),
+      ...(input.address !== undefined && { address: input.address }),
+      ...(input.bloodType !== undefined && { bloodType: input.bloodType }),
+    };
+    return this.patients[idx];
   }
 }

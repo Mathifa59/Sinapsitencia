@@ -1,22 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { Plus, Activity, Loader2 } from "lucide-react";
 import { useAllCases } from "@/modules/cases/presentation/hooks/useCases";
-import { Badge } from "@/components/ui/badge";
+import { CaseStatusBadge } from "@/modules/cases/presentation/components/CaseStatusBadge";
+import { CaseFormModal } from "@/modules/cases/presentation/components/CaseFormModal";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
-import { CASE_STATUS_LABELS } from "@/constants";
-import type { CaseStatus } from "@/modules/cases/domain/entities/legal-case.entity";
-
-const STATUS_VARIANT: Record<CaseStatus, "success" | "warning" | "info" | "secondary" | "outline"> = {
-  activo: "success",
-  en_revision: "warning",
-  nuevo: "info",
-  cerrado: "secondary",
-  archivado: "outline",
-};
 
 export default function AdminEpisodesPage() {
+  const [isNewEpisodeModalOpen, setIsNewEpisodeModalOpen] = useState(false);
   const { data: paginatedCases, isLoading } = useAllCases();
 
   const legalCases = paginatedCases?.data ?? [];
@@ -29,7 +22,7 @@ export default function AdminEpisodesPage() {
           <h1 className="text-2xl font-bold text-slate-900">Episodios Clínicos</h1>
           <p className="text-slate-500 text-sm mt-1">{totalCases} episodios registrados</p>
         </div>
-        <Button variant="primary" size="sm" className="gap-2">
+        <Button variant="primary" size="sm" className="gap-2" onClick={() => setIsNewEpisodeModalOpen(true)}>
           <Plus className="h-4 w-4" />Nuevo episodio
         </Button>
       </div>
@@ -73,9 +66,7 @@ export default function AdminEpisodesPage() {
                     {legalCase.doctor.fullName}
                   </td>
                   <td className="px-5 py-4">
-                    <Badge variant={STATUS_VARIANT[legalCase.status]}>
-                      {CASE_STATUS_LABELS[legalCase.status]}
-                    </Badge>
+                    <CaseStatusBadge status={legalCase.status} />
                   </td>
                   <td className="px-5 py-4 text-slate-400 hidden lg:table-cell">
                     {formatDate(legalCase.createdAt)}
@@ -93,6 +84,8 @@ export default function AdminEpisodesPage() {
           </table>
         </div>
       )}
+
+      <CaseFormModal open={isNewEpisodeModalOpen} onClose={() => setIsNewEpisodeModalOpen(false)} />
     </div>
   );
 }

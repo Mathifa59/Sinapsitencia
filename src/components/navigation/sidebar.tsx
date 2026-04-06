@@ -7,7 +7,7 @@ import {
   Bell, Stethoscope, Users, Heart, Activity,
   FolderOpen, ShieldCheck, X, ChevronRight
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 import { useUIStore } from "@/store/ui.store";
 import { useAuthStore } from "@/store/auth.store";
 import {
@@ -101,7 +101,7 @@ export function Sidebar() {
         <div className="border-t border-slate-700 px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
-              {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+              {getInitials(user.name)}
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-white truncate">{user.name}</p>

@@ -17,11 +17,11 @@ const PRIORITY_CONFIG: Record<CasePriority, { label: string; variant: "destructi
 };
 
 export function CaseStatusBadge({ status }: { status: CaseStatus }) {
-  const cfg = STATUS_CONFIG[status];
-  return <Badge variant={cfg.variant}>{cfg.label}</Badge>;
+  const { label, variant } = STATUS_CONFIG[status];
+  return <Badge variant={variant}>{label}</Badge>;
 }
 
 export function CasePriorityBadge({ priority }: { priority: CasePriority }) {
-  const cfg = PRIORITY_CONFIG[priority];
-  return <Badge variant={cfg.variant}>{cfg.label}</Badge>;
+  const { label, variant } = PRIORITY_CONFIG[priority];
+  return <Badge variant={variant}>{label}</Badge>;
 }

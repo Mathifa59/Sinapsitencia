@@ -3,24 +3,28 @@
 import { useState } from "react";
 import { Search, Plus, CheckCircle, Clock, Edit3, Loader2 } from "lucide-react";
 import { useDocuments } from "@/modules/documents/presentation/hooks/useDocuments";
+import { DocumentFormModal } from "@/modules/documents/presentation/components/DocumentFormModal";
+import { DocumentDetailModal } from "@/modules/documents/presentation/components/DocumentDetailModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/utils";
 import { DOCUMENT_TYPE_LABELS } from "@/constants";
-import type { DocumentStatus } from "@/modules/documents/domain/entities/document.entity";
+import type { DocumentEntity, DocumentStatus } from "@/modules/documents/domain/entities/document.entity";
 
 const STATUS_CONFIG: Record<DocumentStatus, { label: string; variant: "success" | "warning" | "secondary" | "outline" }> = {
-  firmado:         { label: "Firmado",          variant: "success"   },
-  pendiente_firma: { label: "Pendiente firma",  variant: "warning"   },
-  borrador:        { label: "Borrador",          variant: "secondary" },
-  archivado:       { label: "Archivado",         variant: "outline"   },
+  firmado:         { label: "Firmado",         variant: "success"   },
+  pendiente_firma: { label: "Pendiente firma", variant: "warning"   },
+  borrador:        { label: "Borrador",        variant: "secondary" },
+  archivado:       { label: "Archivado",       variant: "outline"   },
 };
 
 export default function AdminDocumentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: paginatedResult, isLoading } = useDocuments({ search: searchQuery || undefined });
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<DocumentEntity | null>(null);
 
+  const { data: paginatedResult, isLoading } = useDocuments({ search: searchQuery || undefined });
   const documents = paginatedResult?.data ?? [];
   const totalDocuments = paginatedResult?.total ?? 0;
 
@@ -31,7 +35,7 @@ export default function AdminDocumentsPage() {
           <h1 className="text-2xl font-bold text-slate-900">Gestión Documental</h1>
           <p className="text-slate-500 text-sm mt-1">{totalDocuments} documentos en el sistema</p>
         </div>
-        <Button variant="primary" size="sm" className="gap-2">
+        <Button variant="primary" size="sm" className="gap-2" onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="h-4 w-4" />Nuevo documento
         </Button>
       </div>
@@ -68,10 +72,14 @@ export default function AdminDocumentsPage() {
             </thead>
             <tbody className="divide-y divide-slate-50">
               {documents.map((document) => {
-                const statusConfig = STATUS_CONFIG[document.status];
+                const { label, variant } = STATUS_CONFIG[document.status];
                 const validSignatureCount = document.signatures.filter((s) => s.isValid).length;
                 return (
-                  <tr key={document.id} className="hover:bg-slate-50 transition-colors cursor-pointer">
+                  <tr
+                    key={document.id}
+                    className="hover:bg-slate-50 transition-colors cursor-pointer"
+                    onClick={() => setSelectedDocument(document)}
+                  >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded-md bg-slate-100 flex items-center justify-center shrink-0">
@@ -95,7 +103,7 @@ export default function AdminDocumentsPage() {
                       {document.patientName ?? "—"}
                     </td>
                     <td className="px-5 py-4">
-                      <Badge variant={statusConfig.variant}>{statusConfig.label}</Badge>
+                      <Badge variant={variant}>{label}</Badge>
                     </td>
                     <td className="px-5 py-4 hidden sm:table-cell">
                       <span className="text-slate-600">{validSignatureCount}</span>
@@ -120,6 +128,9 @@ export default function AdminDocumentsPage() {
           </table>
         </div>
       )}
+
+      <DocumentFormModal open={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+      <DocumentDetailModal document={selectedDocument} onClose={() => setSelectedDocument(null)} />
     </div>
   );
 }

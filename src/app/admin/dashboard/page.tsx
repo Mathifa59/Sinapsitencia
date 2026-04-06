@@ -7,23 +7,8 @@ import { useUsers } from "@/modules/users/presentation/hooks/useUsers";
 import { usePatients } from "@/modules/patients/presentation/hooks/usePatients";
 import { useDocuments } from "@/modules/documents/presentation/hooks/useDocuments";
 import { useAuditLogs } from "@/modules/audit/presentation/hooks/useAuditLogs";
-import { formatDateTime } from "@/lib/utils";
-import { ROLE_LABELS } from "@/constants";
-import type { AuditAction } from "@/modules/audit/domain/entities/audit-log.entity";
-import type { UserRole } from "@/types";
-
-const ACTION_LABELS: Record<AuditAction, string> = {
-  login: "Inicio de sesión", logout: "Cierre de sesión", create: "Registro creado",
-  update: "Registro actualizado", delete: "Registro eliminado", view: "Consulta",
-  sign: "Firma", download: "Descarga", share: "Compartido",
-};
-const ACTION_VARIANT: Record<AuditAction, "info" | "success" | "warning" | "destructive" | "secondary" | "outline"> = {
-  login: "success", logout: "secondary", create: "info", update: "warning",
-  delete: "destructive", view: "outline", sign: "success", download: "secondary", share: "info",
-};
-const ROLE_VARIANT: Record<UserRole, "info" | "secondary" | "warning"> = {
-  doctor: "info", lawyer: "secondary", admin: "warning",
-};
+import { formatDateTime, getInitials } from "@/lib/utils";
+import { ROLE_LABELS, AUDIT_ACTION_LABELS, AUDIT_ACTION_BADGE_VARIANT, ROLE_BADGE_VARIANT } from "@/constants";
 
 export default function AdminDashboardPage() {
   const { data: systemUsers = [] } = useUsers();
@@ -114,7 +99,7 @@ export default function AdminDashboardPage() {
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
                       <div className="h-7 w-7 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 shrink-0">
-                        {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                        {getInitials(user.name)}
                       </div>
                       <div className="min-w-0">
                         <p className="font-medium text-slate-800 truncate">{user.name}</p>
@@ -123,7 +108,7 @@ export default function AdminDashboardPage() {
                     </div>
                   </td>
                   <td className="px-5 py-3 hidden sm:table-cell">
-                    <Badge variant={ROLE_VARIANT[user.role]}>{ROLE_LABELS[user.role]}</Badge>
+                    <Badge variant={ROLE_BADGE_VARIANT[user.role]}>{ROLE_LABELS[user.role]}</Badge>
                   </td>
                   <td className="px-5 py-3">
                     <Badge variant={user.isActive ? "success" : "destructive"}>
@@ -145,10 +130,10 @@ export default function AdminDashboardPage() {
             {recentAuditLogs.map((auditLog) => (
               <div key={auditLog.id} className="px-5 py-3.5 flex items-start gap-3">
                 <Badge
-                  variant={ACTION_VARIANT[auditLog.action]}
+                  variant={AUDIT_ACTION_BADGE_VARIANT[auditLog.action]}
                   className="shrink-0 mt-0.5 text-xs"
                 >
-                  {ACTION_LABELS[auditLog.action]}
+                  {AUDIT_ACTION_LABELS[auditLog.action]}
                 </Badge>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium text-slate-700 truncate">{auditLog.description}</p>

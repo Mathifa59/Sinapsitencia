@@ -9,7 +9,7 @@ import {
 import { useAuthStore } from "@/store/auth.store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getInitials } from "@/lib/utils";
 import type { ContactRequestStatus } from "@/modules/matching/domain/entities/matching.entity";
 
 const STATUS_LABELS: Record<ContactRequestStatus, string> = {
@@ -77,7 +77,7 @@ export default function LawyerRequestsPage() {
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-sm shrink-0">
-                  {request.fromDoctor.fullName.split(" ").map((n: string) => n[0]).slice(0, 2).join("")}
+                  {getInitials(request.fromDoctor.fullName)}
                 </div>
                 <div>
                   <p className="font-semibold text-slate-900">{request.fromDoctor.fullName}</p>

@@ -1,24 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Plus, MoreHorizontal, Loader2 } from "lucide-react";
-import { useUsers } from "@/modules/users/presentation/hooks/useUsers";
+import { Search, Plus, Loader2 } from "lucide-react";
+import { useUsers, useToggleUserStatus } from "@/modules/users/presentation/hooks/useUsers";
+import { UserFormModal } from "@/modules/users/presentation/components/UserFormModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatDate } from "@/lib/utils";
-import { ROLE_LABELS } from "@/constants";
-import type { UserRole } from "@/types";
-
-const ROLE_VARIANT: Record<UserRole, "info" | "secondary" | "warning"> = {
-  doctor: "info",
-  lawyer: "secondary",
-  admin: "warning",
-};
+import { formatDate, getInitials } from "@/lib/utils";
+import { ROLE_LABELS, ROLE_BADGE_VARIANT } from "@/constants";
 
 export default function AdminUsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   const { data: systemUsers = [], isLoading } = useUsers();
+  const { mutate: toggleStatus, isPending: isTogglingStatus } = useToggleUserStatus();
 
   const filteredUsers = systemUsers.filter(
     (user) =>
@@ -33,7 +30,7 @@ export default function AdminUsersPage() {
           <h1 className="text-2xl font-bold text-slate-900">Usuarios</h1>
           <p className="text-slate-500 text-sm mt-1">{systemUsers.length} usuarios registrados</p>
         </div>
-        <Button variant="primary" size="sm" className="gap-2">
+        <Button variant="primary" size="sm" className="gap-2" onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="h-4 w-4" />Nuevo usuario
         </Button>
       </div>
@@ -74,14 +71,14 @@ export default function AdminUsersPage() {
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 shrink-0">
-                        {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                        {getInitials(user.name)}
                       </div>
                       <span className="font-medium text-slate-800">{user.name}</span>
                     </div>
                   </td>
                   <td className="px-5 py-4 text-slate-500 hidden md:table-cell">{user.email}</td>
                   <td className="px-5 py-4">
-                    <Badge variant={ROLE_VARIANT[user.role]}>
+                    <Badge variant={ROLE_BADGE_VARIANT[user.role]}>
                       {ROLE_LABELS[user.role]}
                     </Badge>
                   </td>
@@ -94,8 +91,14 @@ export default function AdminUsersPage() {
                     {formatDate(user.createdAt)}
                   </td>
                   <td className="px-5 py-4">
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400">
-                      <MoreHorizontal className="h-4 w-4" />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-7"
+                      disabled={isTogglingStatus}
+                      onClick={() => toggleStatus(user.id)}
+                    >
+                      {user.isActive ? "Desactivar" : "Activar"}
                     </Button>
                   </td>
                 </tr>
@@ -111,6 +114,8 @@ export default function AdminUsersPage() {
           </table>
         </div>
       )}
+
+      <UserFormModal open={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
     </div>
   );
 }

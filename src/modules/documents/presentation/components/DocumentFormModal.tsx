@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import {
   Dialog,
@@ -22,24 +23,55 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateCase } from "../hooks/useCases";
+import { useCreateDocument } from "../hooks/useDocuments";
 import { usePatients } from "@/modules/patients/presentation/hooks/usePatients";
 import { useAuthStore } from "@/store/auth.store";
-import { caseFormSchema, type CaseFormValues } from "@/validators/case";
-import type { CasePriority } from "../../domain/entities/legal-case.entity";
+import { DOCUMENT_TYPE_LABELS } from "@/constants";
+import type { DocumentType } from "../../domain/entities/document.entity";
+
+// ─── Schema ───────────────────────────────────────────────────────────────────
+
+const documentFormSchema = z.object({
+  title: z.string().min(3, "El título debe tener al menos 3 caracteres"),
+  type: z.enum([
+    "historia_clinica",
+    "consentimiento_informado",
+    "informe_medico",
+    "receta",
+    "orden_laboratorio",
+    "certificado_medico",
+    "documento_legal",
+    "otro",
+  ]),
+  patientId: z.string().optional(),
+  initialContent: z.string().optional(),
+});
+
+type DocumentFormValues = z.infer<typeof documentFormSchema>;
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
-interface CaseFormModalProps {
+interface DocumentFormModalProps {
   open: boolean;
   onClose: () => void;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
+const DOCUMENT_TYPES: DocumentType[] = [
+  "historia_clinica",
+  "consentimiento_informado",
+  "informe_medico",
+  "receta",
+  "orden_laboratorio",
+  "certificado_medico",
+  "documento_legal",
+  "otro",
+];
+
+export function DocumentFormModal({ open, onClose }: DocumentFormModalProps) {
   const { user } = useAuthStore();
-  const { mutateAsync: createCase, isPending } = useCreateCase(user?.id ?? "");
+  const { mutateAsync: createDocument, isPending } = useCreateDocument();
   const { data: paginatedPatients } = usePatients({ pageSize: 100 });
   const patients = paginatedPatients?.data ?? [];
 
@@ -50,34 +82,36 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<CaseFormValues>({
-    resolver: zodResolver(caseFormSchema),
+  } = useForm<DocumentFormValues>({
+    resolver: zodResolver(documentFormSchema),
     defaultValues: {
       title: "",
-      description: "",
-      priority: "media",
+      type: "informe_medico",
       patientId: "",
-      notes: "",
+      initialContent: "",
     },
   });
 
-  const selectedPriority = watch("priority");
+  const selectedType = watch("type");
   const selectedPatientId = watch("patientId");
 
-  const onSubmit = async (formValues: CaseFormValues) => {
+  const onSubmit = async (formValues: DocumentFormValues) => {
+    if (!user) return;
+    const selectedPatient = patients.find((p) => p.id === formValues.patientId);
     try {
-      await createCase({
+      await createDocument({
         title: formValues.title,
-        description: formValues.description,
-        priority: formValues.priority as CasePriority,
-        doctorId: user?.id ?? "",
+        type: formValues.type as DocumentType,
+        authorId: user.id,
+        authorName: user.name,
         patientId: formValues.patientId || undefined,
-        notes: formValues.notes || undefined,
+        patientName: selectedPatient?.fullName,
+        initialContent: formValues.initialContent || undefined,
       });
       reset();
       onClose();
     } catch {
-      // Los errores del repositorio se mostrarán en consola en modo demo
+      // Errores visibles en consola en modo demo
     }
   };
 
@@ -90,19 +124,19 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) handleClose(); }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Nuevo caso</DialogTitle>
+          <DialogTitle>Nuevo documento</DialogTitle>
           <DialogDescription>
-            Registra un nuevo caso clínico-legal para seguimiento y gestión.
+            Crea un nuevo documento clínico o legal en el sistema.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Título */}
           <div className="space-y-1.5">
-            <Label htmlFor="case-title">Título del caso *</Label>
+            <Label htmlFor="doc-title">Título *</Label>
             <Input
-              id="case-title"
-              placeholder="Ej: Revisión de consentimiento informado — Cirugía"
+              id="doc-title"
+              placeholder="Ej: Informe de consulta — Dr. García"
               {...register("title")}
             />
             {errors.title && (
@@ -110,36 +144,23 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
             )}
           </div>
 
-          {/* Descripción */}
-          <div className="space-y-1.5">
-            <Label htmlFor="case-description">Descripción *</Label>
-            <Textarea
-              id="case-description"
-              placeholder="Describe el contexto clínico y los aspectos legales relevantes..."
-              rows={3}
-              {...register("description")}
-            />
-            {errors.description && (
-              <p className="text-xs text-red-500">{errors.description.message}</p>
-            )}
-          </div>
-
           <div className="grid grid-cols-2 gap-4">
-            {/* Prioridad */}
+            {/* Tipo */}
             <div className="space-y-1.5">
-              <Label>Prioridad *</Label>
+              <Label>Tipo de documento *</Label>
               <Select
-                value={selectedPriority}
-                onValueChange={(val) => setValue("priority", val as CasePriority)}
+                value={selectedType}
+                onValueChange={(val) => setValue("type", val as DocumentType)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar prioridad" />
+                  <SelectValue placeholder="Seleccionar tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="baja">Baja</SelectItem>
-                  <SelectItem value="media">Media</SelectItem>
-                  <SelectItem value="alta">Alta</SelectItem>
-                  <SelectItem value="critica">Crítica</SelectItem>
+                  {DOCUMENT_TYPES.map((docType) => (
+                    <SelectItem key={docType} value={docType}>
+                      {DOCUMENT_TYPE_LABELS[docType]}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -155,7 +176,7 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
                   <SelectValue placeholder="Sin paciente" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Sin paciente asignado</SelectItem>
+                  <SelectItem value="">Sin paciente</SelectItem>
                   {patients.map((patient) => (
                     <SelectItem key={patient.id} value={patient.id}>
                       {patient.fullName}
@@ -166,34 +187,24 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
             </div>
           </div>
 
-          {/* Notas */}
+          {/* Contenido inicial */}
           <div className="space-y-1.5">
-            <Label htmlFor="case-notes">Notas adicionales</Label>
+            <Label htmlFor="doc-content">Contenido inicial</Label>
             <Textarea
-              id="case-notes"
-              placeholder="Observaciones o información adicional relevante..."
-              rows={2}
-              {...register("notes")}
+              id="doc-content"
+              placeholder="Escribe el contenido del documento..."
+              rows={4}
+              {...register("initialContent")}
             />
           </div>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              disabled={isPending}
-            >
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>
               Cancelar
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={isPending}
-              className="gap-2"
-            >
+            <Button type="submit" variant="primary" disabled={isPending} className="gap-2">
               {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              Crear caso
+              Crear documento
             </Button>
           </DialogFooter>
         </form>

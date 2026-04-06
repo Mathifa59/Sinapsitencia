@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Plus, User, Loader2 } from "lucide-react";
+import { Search, Plus, User, Pencil, Loader2 } from "lucide-react";
 import { usePatients } from "@/modules/patients/presentation/hooks/usePatients";
+import { PatientFormModal } from "@/modules/patients/presentation/components/PatientFormModal";
 import { formatPatientGender } from "@/modules/patients/domain/entities/patient.entity";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/utils";
-import type { PatientGender } from "@/modules/patients/domain/entities/patient.entity";
+import type { PatientEntity, PatientGender } from "@/modules/patients/domain/entities/patient.entity";
 
 const GENDER_VARIANT: Record<PatientGender, "info" | "secondary" | "outline"> = {
   M: "info",
@@ -18,8 +19,10 @@ const GENDER_VARIANT: Record<PatientGender, "info" | "secondary" | "outline"> = 
 
 export default function AdminPatientsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: paginatedResult, isLoading } = usePatients({ search: searchQuery || undefined });
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [patientToEdit, setPatientToEdit] = useState<PatientEntity | null>(null);
 
+  const { data: paginatedResult, isLoading } = usePatients({ search: searchQuery || undefined });
   const patients = paginatedResult?.data ?? [];
   const totalPatients = paginatedResult?.total ?? 0;
 
@@ -30,7 +33,7 @@ export default function AdminPatientsPage() {
           <h1 className="text-2xl font-bold text-slate-900">Pacientes</h1>
           <p className="text-slate-500 text-sm mt-1">{totalPatients} pacientes registrados</p>
         </div>
-        <Button variant="primary" size="sm" className="gap-2">
+        <Button variant="primary" size="sm" className="gap-2" onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="h-4 w-4" />Registrar paciente
         </Button>
       </div>
@@ -67,9 +70,19 @@ export default function AdminPatientsPage() {
                   <p className="font-semibold text-slate-900">{patient.fullName}</p>
                   <p className="text-xs text-slate-500 mt-0.5">DNI: {patient.dni}</p>
                 </div>
-                <Badge variant={GENDER_VARIANT[patient.gender]} className="shrink-0">
-                  {formatPatientGender(patient.gender)}
-                </Badge>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Badge variant={GENDER_VARIANT[patient.gender]}>
+                    {formatPatientGender(patient.gender)}
+                  </Badge>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-slate-400 hover:text-slate-700"
+                    onClick={() => setPatientToEdit(patient)}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
               <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-slate-500">
                 <span>Nacimiento: {formatDate(patient.birthDate)}</span>
@@ -90,6 +103,16 @@ export default function AdminPatientsPage() {
           <div className="text-center py-16 text-slate-400">No se encontraron pacientes</div>
         )}
       </div>
+
+      <PatientFormModal
+        open={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
+      <PatientFormModal
+        open={Boolean(patientToEdit)}
+        onClose={() => setPatientToEdit(null)}
+        patient={patientToEdit ?? undefined}
+      />
     </div>
   );
 }

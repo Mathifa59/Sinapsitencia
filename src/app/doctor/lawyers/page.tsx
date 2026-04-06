@@ -11,6 +11,7 @@ import { useAuthStore } from "@/store/auth.store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getInitials } from "@/lib/utils";
 import type { LawyerProfileEntity } from "@/modules/matching/domain/entities/matching.entity";
 
 export default function DoctorLawyersPage() {
@@ -82,7 +83,7 @@ export default function DoctorLawyersPage() {
             <div key={lawyer.id} className="bg-white rounded-lg border border-slate-200 p-5 space-y-4">
               <div className="flex items-start gap-4">
                 <div className="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center shrink-0 text-white font-bold text-sm">
-                  {lawyer.fullName.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                  {getInitials(lawyer.fullName)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">

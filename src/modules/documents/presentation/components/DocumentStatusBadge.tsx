@@ -14,12 +14,11 @@ const STATUS_CONFIG: Record<DocumentStatus, {
 };
 
 export function DocumentStatusBadge({ status }: { status: DocumentStatus }) {
-  const cfg = STATUS_CONFIG[status];
-  const Icon = cfg.icon;
+  const { label, variant, icon: Icon } = STATUS_CONFIG[status];
   return (
-    <Badge variant={cfg.variant} className="flex items-center gap-1">
+    <Badge variant={variant} className="flex items-center gap-1">
       <Icon className="h-3 w-3" />
-      {cfg.label}
+      {label}
     </Badge>
   );
 }
