@@ -2,6 +2,7 @@ import type {
   IDocumentRepository,
   DocumentFilters,
   PaginatedDocuments,
+  CreateDocumentInput,
 } from "../../domain/repositories/IDocumentRepository";
 import type { DocumentEntity, DocumentStatus } from "../../domain/entities/document.entity";
 import { mockDocuments } from "@/mocks/documents";
@@ -91,6 +92,37 @@ export class MockDocumentRepository implements IDocumentRepository {
     const byAuthor = this.documents.filter((d) => d.authorId === authorId);
     const filtered = this.applyFilters(byAuthor, filters);
     return this.paginate(filtered, filters?.page, filters?.pageSize);
+  }
+
+  async create(input: CreateDocumentInput): Promise<DocumentEntity> {
+    await new Promise((r) => setTimeout(r, 400));
+    const versionId = `v${Date.now()}`;
+    const newDocument: DocumentEntity = {
+      id: `doc${Date.now()}`,
+      title: input.title,
+      type: input.type,
+      status: "borrador",
+      patientId: input.patientId,
+      patientName: input.patientName,
+      authorId: input.authorId,
+      authorName: input.authorName,
+      currentVersionId: versionId,
+      versions: [
+        {
+          id: versionId,
+          version: 1,
+          content: input.initialContent ?? "",
+          createdById: input.authorId,
+          createdByName: input.authorName,
+          createdAt: new Date(),
+        },
+      ],
+      signatures: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.documents.push(newDocument);
+    return newDocument;
   }
 
   async updateStatus(
