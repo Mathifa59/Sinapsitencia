@@ -8,6 +8,8 @@ const ROLE_BY_EMAIL: Record<string, UserRole> = {
   "abg.vasquez@legal.pe": "lawyer",
   "abg.flores@legal.pe": "lawyer",
   "admin@hngai.pe": "admin",
+  "mathiwen519@gmail.com": "admin",
+  "natoreyes0211@gmail.com": "admin",
 };
 
 const ROLE_USER_ID: Record<UserRole, string> = {
@@ -15,6 +17,19 @@ const ROLE_USER_ID: Record<UserRole, string> = {
   lawyer: "u3",
   admin: "u5",
 };
+
+/** Usuarios con contraseña protegida (no demo) */
+const PROTECTED_USERS: Record<string, string> = {
+  "mathiwen519@gmail.com": "12345678",
+  "natoreyes0211@gmail.com": "12345678",
+};
+
+function buildUserResponse(user: (typeof mockUsers)[number]) {
+  return apiSuccess({
+    user: { id: user.id, email: user.email, name: user.name, role: user.role, isActive: user.isActive, createdAt: user.createdAt },
+    token: `mock-token-${user.id}`,
+  });
+}
 
 export async function POST(request: Request) {
   await simulateLatency();
@@ -27,10 +42,7 @@ export async function POST(request: Request) {
     const userId = ROLE_USER_ID[role as UserRole];
     const user = mockUsers.find((u) => u.id === userId);
     if (!user) return apiError("Rol no válido", 400);
-    return apiSuccess({
-      user: { id: user.id, email: user.email, name: user.name, role: user.role, isActive: user.isActive, createdAt: user.createdAt },
-      token: `mock-token-${user.id}`,
-    });
+    return buildUserResponse(user);
   }
 
   // Login por email/password
@@ -39,12 +51,14 @@ export async function POST(request: Request) {
   const matchedRole = ROLE_BY_EMAIL[email];
   if (!matchedRole) return apiError("Credenciales incorrectas", 401);
 
-  const userId = ROLE_USER_ID[matchedRole];
-  const user = mockUsers.find((u) => u.id === userId);
+  // Validar contraseña para usuarios protegidos
+  if (PROTECTED_USERS[email] && PROTECTED_USERS[email] !== password) {
+    return apiError("Credenciales incorrectas", 401);
+  }
+
+  // Buscar usuario directamente por email (para usuarios con cuenta propia)
+  const user = mockUsers.find((u) => u.email === email) ?? mockUsers.find((u) => u.id === ROLE_USER_ID[matchedRole]);
   if (!user) return apiError("Usuario no encontrado", 404);
 
-  return apiSuccess({
-    user: { id: user.id, email: user.email, name: user.name, role: user.role, isActive: user.isActive, createdAt: user.createdAt },
-    token: `mock-token-${user.id}`,
-  });
+  return buildUserResponse(user);
 }

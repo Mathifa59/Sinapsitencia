@@ -41,6 +41,22 @@ export const mockUsers: User[] = [
     createdAt: "2024-01-01T08:00:00Z",
     isActive: true,
   },
+  {
+    id: "u6",
+    email: "mathiwen519@gmail.com",
+    name: "Mathiwen",
+    role: "admin",
+    createdAt: "2024-04-01T10:00:00Z",
+    isActive: true,
+  },
+  {
+    id: "u7",
+    email: "natoreyes0211@gmail.com",
+    name: "Nato Reyes",
+    role: "admin",
+    createdAt: "2024-04-01T10:00:00Z",
+    isActive: true,
+  },
 ];
 
 export const mockDoctorProfiles: DoctorProfile[] = [

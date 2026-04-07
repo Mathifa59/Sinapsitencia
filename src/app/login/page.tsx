@@ -29,7 +29,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect");
-  const { loginByRole, isLoading } = useAuthStore();
+  const { login, loginByRole, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,9 +52,13 @@ function LoginForm() {
 
   const onSubmit = async (data: LoginFormValues) => {
     setError(null);
-    const role = ROLE_SHORTCUTS.find((r) => r.email === data.email)?.role ?? "doctor";
-    await loginByRole(role);
-    redirectAfterLogin(role);
+    try {
+      await login({ email: data.email, password: data.password });
+      const { user } = useAuthStore.getState();
+      if (user) redirectAfterLogin(user.role);
+    } catch {
+      setError("Credenciales incorrectas. Verifica tu correo y contraseña.");
+    }
   };
 
   const loginAs = async (role: UserRole) => {
