@@ -1,0 +1,544 @@
+UNIVERSIDAD PERUANA DE CIENCIAS APLICADAS
+FACULTAD DE INGENIERÍA
+PROGRAMA ACADÉMICO DE INGENIERÍA DE SOFTWARE
+
+Aplicación web basada en Machine Learning para el asesoramiento médico-legal a profesionales de la salud en el Perú
+
+ACTA DE CONSTITUCIÓN DEL PROYECTO
+
+AUTOR(ES)
+
+Vasquez Requejo Augusto Mathias Leonardo (u20221a955)
+Reyes Valenzuela Renato German (u20221b471)
+
+ASESOR(ES)
+
+Castañeda Vargas, Pedro Segundo
+
+ Lima, 08 de diciembre del 2025
+
+ 
+Historial de Revisiones
+Versión
+Fecha
+Autor
+Descripción
+1.0
+6/12/2025
+Vasquez Requejo, Augusto Mathias Leonardo 
+Reyes Valenzuela, Renato
+Versión inicial del Acta de Constitución del Proyecto para el curso Taller de Desempeño Profesional.
+
+INDICE
+
+ TOC \h \u \z \t &quot;Heading 1,1,Heading 2,2,Heading 3,3,&quot;ACTA DE CONSTITUCIÓN DEL PROYECTO4
+1.RESUMEN EJECUTIVO4
+2.MARCO TEÓRICO4
+3.POSICIONAMIENTO4
+3.1.Planteamiento del Problema4
+3.2.Objetivos4
+3.2.1.Objetivo General4
+3.2.2.Objetivos Específicos4
+3.3.Indicadores de Éxito4
+3.4.Alcance del Proyecto4
+3.5.Suposiciones y Restricciones4
+3.6.Impacto en la Organización (Opcional)4
+4.ORGANIZACIÓN DEL PROYECTO4
+4.1.Equipo del Proyecto4
+4.2.Stakeholders y Usuarios5
+4.3.Recursos requeridos5
+4.4.Fases e Hitos del Proyecto5
+4.5.Enfoques del Trabajo5
+5.GLOSARIO5
+6.SIGLARIO6
+7.BIBLIOGRAFÍA6
+8.APROBACIÓN6
+9.ANEXOS6
+
+ACTA DE CONSTITUCIÓN DEL PROYECTO
+
+RESUMEN EJECUTIVO
+
+Este proyecto tiene como finalidad diseñar y desarrollar una plataforma web inteligente de asesoramiento médico-legal preventivo, orientada a reducir el riesgo clínico-legal y fortalecer la documentación probatoria de los profesionales de la salud que laboran en hospitales públicos del Perú, tomando como caso de estudio el Clinica Sanna &quot;El Golf&quot;(). La iniciativa busca cerrar brechas en trazabilidad clínica, calidad del consentimiento informado y gestión de riesgos médico-legales, generando evidencia estructurada que respalde tanto la seguridad del paciente como la seguridad jurídica del personal asistencial.
+La solución propuesta integrará un módulo de análisis clínico-legal basado en modelos de Machine Learning explicables, un gestor de consentimiento informado con listas de verificación dinámicas y campos obligatorios, una línea de tiempo probatoria que registre eventos, responsables y documentos clave, y servicios de cumplimiento normativo que vinculen las decisiones clínicas con guías y regulaciones vigentes. La plataforma contará con un dashboard clínico-legal para el profesional, mecanismos de auditoría y logs forenses, así como esquemas de control de acceso y cifrado que garanticen confidencialidad, integridad y trazabilidad de la información.
+En conjunto, el proyecto comprende el diseño conceptual y arquitectónico de la solución, el desarrollo de un prototipo funcional (MVP) desplegado en ambiente web, la validación inicial con un grupo piloto de servicios del  (por ejemplo, emergencia, UCI o cirugía) y la elaboración de la documentación técnica y académica correspondiente. Con ello, se busca aportar una herramienta tecnológica que apoye la identificación temprana de riesgos médico-legales, mejore la calidad de la documentación clínica y del consentimiento informado, y genere insumos cuantitativos y cualitativos para futuras mejoras, escalamiento institucional y formulación de políticas orientadas a la seguridad del paciente y a la protección jurídico-profesional del personal de salud.
+
+MARCO TEÓRICO
+
+• Judicialización en salud y aumento de conflictos médico-legales en el Perú
+En los últimos años, el sistema sanitario peruano ha experimentado un incremento sostenido de reclamos, quejas y procesos por presunta mala praxis. Según reportes oficiales de SUSALUD, más del 90 % de atenciones por vulneración de derechos se concentra en establecimientos públicos, evidenciando problemas en calidad asistencial, comunicación clínica y documentación de procesos críticos. La Defensoría del Pueblo ha señalado además deficiencias reiteradas en obstetricia, neonatología y servicios de emergencia, donde fallas en registros, protocolos y comunicación elevan el riesgo de eventos adversos y litigios. Este escenario de judicialización progresiva afecta tanto la seguridad del paciente como la estabilidad emocional y jurídica del profesional, y evidencia la necesidad de herramientas sistemáticas de soporte médico-legal, documentación probatoria y reducción de conflictos.
+
+• Consentimiento informado, deber de información y responsabilidad médica
+Diversas investigaciones subrayan que la mayoría de disputas médico-legales tiene como eje no el acto clínico en sí, sino fallas en la comunicación con el paciente y en el consentimiento informado. En el entorno peruano, la Corte Suprema ha consolidado la idea de que la responsabilidad se activa cuando existe daño, nexo causal y una infracción al estándar profesional, siendo la omisión informativa una de las causas más frecuentes de imputación. Asimismo, estudios en obstetricia, ginecología y cirugía pediátrica han mostrado que la falta de registros claros, inconsistencias en las notas clínicas y ausencia de trazabilidad complican la defensa del médico incluso cuando la atención fue diligente. Por ello, los sistemas digitales que gestionan listas de verificación, completitud del consentimiento y audit trail se vuelven esenciales para asegurar calidad probatoria y transparencia clínica.
+
+• Inteligencia Artificial y Machine Learning aplicados al análisis médico-legal
+El uso de IA/ML en el ámbito clínico-legal ha crecido significativamente, permitiendo analizar patrones en historias clínicas, identificar factores de riesgo de litigio, detectar omisiones documentales y clasificar eventos adversos con mayor precisión. Estudios recientes demuestran que modelos supervisados, combinados con técnicas de explicabilidad como SHAP y LIME, pueden proporcionar apoyo robusto a profesionales y gestores hospitalarios al ofrecer recomendaciones transparentes y verificables. En el ámbito jurídico-sanitario, la IA también se aplica al análisis de expedientes, evaluación de adherencia a guías clínicas y segmentación de causas frecuentes de reclamos, fortaleciendo la prevención de conflictos y la toma de decisiones basada en evidencia. Estos avances sugieren que una plataforma web con IA/ML puede contribuir de manera directa a mejorar la diligencia profesional, reducir errores y optimizar la documentación probatoria.
+
+• Plataformas digitales para gestión de riesgo clínico y soporte probatorio
+La literatura internacional destaca que los sistemas digitales con módulos de trazabilidad, auditoría de procesos, checklist dinámicos y monitoreo de adherencia a guías son herramientas altamente efectivas para disminuir la exposición legal. Su uso facilita la captura estructurada de datos clínicos, reduce la variabilidad en tareas críticas (como información al paciente, procedimientos riesgosos o registro de complicaciones), y mejora la continuidad de la evidencia clínica ante reclamos. Además, en hospitales públicos, donde la sobrecarga asistencial y la rotación de personal dificultan la uniformidad del trabajo, las plataformas digitales permiten estandarizar procesos, asegurar completitud documental, generar alertas preventivas y producir reportes interpretables para médicos, abogados y áreas de calidad. Estas soluciones se han convertido en un pilar para hospitales que buscan fortalecer su sistema de defensa institucional y cultura de transparencia.
+
+• Ética, explicabilidad y gobernanza en el uso de IA en salud
+El despliegue de IA en medicina implica desafíos éticos relacionados con sesgos algorítmicos, supervisión humana, correcta interpretación de resultados y distribución justa de responsabilidades en caso de daño. La evidencia muestra que los sistemas clínicos de IA deben incorporar explicabilidad (XAI), mecanismos de control humano significativo, gestión de versiones, trazabilidad algorítmica y validación contextual antes de su uso operativo. Asimismo, el sector salud exige que cualquier recomendación generada por IA sea interpretable y verificable, evitando riesgos derivados de una confianza excesiva o de interpretaciones erróneas por parte de clínicos. Estos principios son esenciales para garantizar que un sistema web de asesoramiento médico-legal no solo mejore la calidad documental, sino que también respete marcos éticos, promueva la seguridad del paciente y mantenga claridad en la asignación de responsabilidades.
+
+• Protección de datos, seguridad de la información y marcos legales aplicables
+El tratamiento de información clínica y médico-legal requiere estándares rigurosos de seguridad, confidencialidad y gobernanza. En el Perú, la Ley de Protección de Datos Personales (Ley N.º 29733) y las normas sectoriales del MINSA regulan el manejo de datos sensibles, exigiendo consentimiento informado, control de accesos, minimización de datos y trazabilidad de operaciones. Para una plataforma de soporte médico-legal, es indispensable cumplir con estándares internacionales como ISO/IEC 27001 (seguridad de la información), ISO 25010 (calidad del software) e ISO 23903 (interoperabilidad en salud). En paralelo, frameworks como COBIT refuerzan la gobernanza de TI mediante controles, auditorías, gestión de riesgos y procesos de mejora continua. La correcta implementación de estas normas garantiza que las funcionalidades de IA/ML, los registros clínicos y los módulos de audit trail operen bajo entornos seguros, confiables y legalmente válidos ante posibles disputas.
+
+POSICIONAMIENTO
+Planteamiento del Problema
+
+Problema
+Causas
+No existe una plataforma web integral basada en inteligencia artificial y aprendizaje automático que brinde asesoramiento médico-legal preventivo, estandarice la obtención del consentimiento informado y asegure una trazabilidad probatoria robusta en los hospitales públicos del Perú, manteniendo a los profesionales de la salud en una situación de alta vulnerabilidad frente a reclamos y procesos por presunta mala praxis.
+●Incremento sostenido de quejas y judicialización sin herramientas tecnológicas que permitan analizar y gestionar el riesgo clínico-legal en tiempo real.
+●Documentación clínica y legal dispersa, incompleta o poco legible (consentimientos en papel, notas clínicas heterogéneas, falta de registro estructurado de decisiones y responsables).
+●Ausencia de módulos integrados en la Historia Clínica Electrónica que utilicen listas de verificación dinámicas y audit trail para soportar la calidad del consentimiento informado y de la comunicación médico-paciente.
+●Falta de sistemas que traduzcan guías clínicas, normas y criterios de “puertos seguros” en recomendaciones operativas y verificables para el personal asistencial.
+●Limitada cultura institucional de gestión de riesgos y aprendizaje a partir de reclamos, lo que impide identificar patrones repetitivos y cerrar brechas organizacionales.
+●Brechas tecnológicas e interoperabilidad limitada entre sistemas de información, que dificultan consolidar evidencia probatoria confiable.
+●      Acceso restringido a asesoría médico-legal oportuna para los profesionales en la práctica diaria, especialmente en servicios de alta presión como emergencia, UCI, cirugía y obstetricia.
+
+Objetivos
+{En esta sección se debe considerar los objetivos desarrollados en el Trabajo de Investigación.}
+Objetivo General
+OG: Desarrollar una aplicación web basada en Machine Learning para el asesoramiento médico-legal de profesionales de la salud en el Perú, con el fin de fortalecer la toma de decisiones clínicas-legales y reducir la vulnerabilidad frente a demandas por mala praxis.
+Objetivos Específicos
+OE 01: Implementar un módulo de gestión documental que permita a los médicos crear, versionar, firmar digitalmente y archivar documentos clinico-legales (historias clínicas, consentimientos informados, informes médicos, certificados) con trazabilidad completa de cada acción, garantizando una cadena de evidencia válida ante procesos legales.
+OE 02: Desarrollar un sistema de recomendación y contacto que permita a los médicos encontrar abogados especializados en derecho médico según su caso particular, establecer comunicación confidencial y gestionar casos legales con seguimiento de estados, prioridades y documentación asociada.
+OE 03: Diseñar e implementar un motor de evaluación de riesgo que, mediante modelos de Machine Learning, analice los factores clínicos y documentales de un caso para generar un puntaje de riesgo médico-legal, acompañado de explicaciones comprensibles (XAI) utilizando técnicas como SHAP y LIME, de modo que el médico entienda los factores que contribuyen al riesgo identificado.
+
+OE 04: Implementar un panel de administración que permita al personal administrativo de la clinica gestionar usuarios, pacientes y episodios clinicos, asi como un registro de auditoría completo que trace todas las acciones realizadas en el sistema (logins, creaciones, ediciones, fir
+.
+ Indicadores de Éxito
+{Indican el artefacto o entregable mediante el cual se logra el cumplimiento de unos o varios objetivos específicos. Debe señalarse con cuales objetivos específicos se alinean.}
+Objetivo Específico
+Indicador de Éxito
+OE1-I1
+Aprobación del acta de reunión inicial con el “cliente”/docente y actores clave (docente guía, profesionales de salud consultados), donde se detallen el problema, alcance, restricciones y necesidades funcionales y médico-legales del proyecto.
+OE1-I2
+Documento de levantamiento de información, análisis del flujo actual de documentación clínica y mapa de procesos médico-legales (consentimiento informado, registro clínico, eventos adversos, comunicación con el paciente), incluyendo brechas y oportunidades de digitalización.
+OE2.I1
+Aprobación del documento de arquitectura de la solución, que incluya: microservicios, API Gateway, módulo de asesoramiento médico-legal, módulo de trazabilidad y audit trail, módulo de explicabilidad de IA (XAI),modelo de datos y flujos de usuario.
+OE2.I2
+Aprobación del diseño del modelo de datos clínico-legal, la especificación del pipeline de Machine Learning y los criterios de explicabilidad, seguridad y trazabilidad probatoria incorporados en la arquitectura.
+OE3.I1
+Prototipo funcional (MVP) de la plataforma web de asesoramiento médico-legal implementado y presentado en una demostración formal; debe incluir: consentimiento informado asistido, audit trail probatorio, panel de riesgos médico-legales, módulo de IA explicable para apoyo en decisiones, registro estructurado del acto clínico.
+OE3.I2
+Manual de usuario, guía de uso del sistema y documentación técnica básica del MVP, validados y aprobados por el docente/tutor del curso.
+OE4.I1
+Resultados de pruebas piloto con profesionales de salud (o simulación con estudiantes avanzados), evidenciando al menos un nivel “satisfactorio” en: usabilidad, pertinencia médico-legal, claridad de la recomendación generada por la IA, utilidad percibida para reducir la vulnerabilidad jurídica.
+OE4.I2
+Informe de evaluación del prototipo y plan de mejora centrado en: confiabilidad del módulo de IA, exactitud y trazabilidad de registros, claridad de la línea de tiempo probatoria, mejoras de seguridad y gobernanza de datos.
+Aprobado por el docente/tutor del Taller de Desempeño Profesional.
+
+Alcance del Proyecto
+
+El proyecto comprende el diseño y desarrollo de un prototipo funcional (MVP) de una aplicación web de asesoramiento médico-legal preventivo para profesionales de la salud de hospitales públicos del Perú, tomando como caso piloto el Clinica Sanna &quot;El Golf&quot;().
+Incluye:
+El análisis del problema de vulnerabilidad médico-legal y el levantamiento de requerimientos de alto nivel (roles principales, escenarios críticos, restricciones del entorno hospitalario).
+El diseño de la arquitectura general de la solución y el desarrollo de un MVP web con módulos básicos de:
+registro y autenticación de usuarios,
+apoyo al consentimiento informado y registro estructurado de eventos clínico-legales,
+Generación de reportes probatorios simples para apoyo a calidad y asesoría médico-legal.
+La validación inicial del prototipo mediante escenarios simulados y la recopilación de retroalimentación de usuarios clave.
+No incluye:
+El despliegue en un entorno productivo hospitalario real ni la integración con historias clínicas electrónicas institucionales.
+El uso de historias clínicas reales o datos personales identificables (solo se emplearán datos ficticios, anonimizados o simulados).
+El desarrollo de módulos avanzados de gestión de litigios; el alcance se limita a la prevención y a la documentación probatoria básica.
+
+Suposiciones y Restricciones
+
+Suposiciones
+Descripción
+Uso voluntario de la plataforma por profesionales de salud
+Se asume que médicos, enfermeras y otros profesionales de los hospitales públicos utilizarán la plataforma de forma voluntaria para gestionar consentimientos informados, registrar actos clínicos y consultar recomendaciones médico-legales.
+Participación de asesores clínico-legales
+Se considera que los asesores médicos-legales y/o miembros del comité de calidad brindarán retroalimentación continua sobre el diseño de los flujos probatorios, los checklists y la interpretación de riesgos generados por la IA.
+Estabilidad del entorno cloud
+Se asume que los servicios cloud (Azure) permanecerán estables durante el desarrollo, pruebas y demostración del proyecto, garantizando disponibilidad mínima para microservicios, base de datos y modelos de IA.
+Disponibilidad de datos simulados y anonimizados
+Se asume que se contará con casos clínicos ficticios o anonimizados suficientes para entrenar, probar y validar el modelo de riesgo médico-legal, sin acceder a historias reales por normativa.
+Estabilidad de los requisitos funcionales y médico-legales
+Se considera que no habrá cambios sustanciales en los requisitos definidos para: consentimiento, línea de tiempo probatoria, auditoría, trazabilidad y módulo de IA explicable.
+Compatibilidad tecnológica de los usuarios
+Se espera que los profesionales utilicen navegadores compatibles con autenticación segura, cifrado, visualización de dashboards y mecanismos de auditoría digital.
+Acceso del equipo a herramientas de desarrollo
+Se asume que el equipo mantendrá acceso continuo a repositorios, entornos cloud, herramientas de desarrollo, documentación normativa y recursos para validar el modelo de IA.
+
+Restricciones
+Descripción
+Presupuesto limitado para servicios cloud
+Los componentes desplegados en Azure deberán ajustarse a recursos de bajo costo (bases de datos básicas, contenedores económicos, almacenamiento limitado).
+Acceso restringido a datos clínicos reales
+Las políticas de confidencialidad y protección de datos del sector salud impiden usar historias clínicas reales, limitando la disponibilidad de datos heterogéneos para entrenar modelos de riesgo.
+Dependencia de la infraestructura cloud
+El correcto funcionamiento del MVP depende de la disponibilidad de servicios clave de Azure (PostgreSQL, Blob Storage, App Service, API Gateway). Cualquier caída afectará pruebas o demos.
+
+Impacto en la Organización 
+
+El proyecto busca desarrollar una plataforma web con módulos de trazabilidad probatoria, gestión del consentimiento informado y análisis médico-legal asistido por modelos de IA/ML, orientada a fortalecer la seguridad jurídica y clínica de los profesionales de salud en hospitales públicos del Perú. La solución permitirá que médicos, enfermeras y comités de calidad cuenten con herramientas estructuradas para documentar adecuadamente el acto clínico, registrar decisiones críticas, generar líneas de tiempo probatorias y recibir asesoramiento normativo contextualizado a los estándares de la lex artis y las obligaciones legales vigentes. Asimismo, la implementación de microservicios especializados, un módulo de IA explicable y una arquitectura de auditoría digital posibilitará centralizar la información dispersa en distintos flujos clínicos, facilitando la reconstrucción del caso médico ante auditorías internas, supervisiones de SUSALUD, procesos administrativos o escenarios de defensa legal. La plataforma también fortalecerá la cultura de seguridad del paciente al reducir brechas documentales, estandarizar el consentimiento informado y disminuir la probabilidad de conflictos derivados de omisiones, errores de comunicación o falta de trazabilidad.
+
+A mediano plazo, el uso continuo de este sistema puede contribuir a reducir la judicialización, disminuir costos asociados a litigios y prácticas defensivas, fortalecer la confianza institucional y mejorar la calidad asistencial mediante evidencia sistematizada. Del mismo modo, el proyecto ofrece un modelo replicable y escalable para otras redes hospitalarias del país, alineándose con iniciativas de transformación digital en salud y con el ODS 3: Salud y Bienestar, al promover prácticas clínicas más seguras, transparentes y protegidas jurídicamente.
+
+ORGANIZACIÓN DEL PROYECTO
+
+Equipo del Proyecto
+
+Tener en cuenta los roles de Scrum – Agile System Development LifeCycle
+
+Rol
+Miembro
+Responsabilidades
+Project Manager (PM)
+Vasquez Requejo, Augusto Mathias Leonardo
+Planificar y coordinar las actividades del proyecto; gestionar tiempos, entregables y comunicación; supervisar la integración entre el modelo ML y la aplicación web; asegurar el cumplimiento de los objetivos y lineamientos académicos.
+Scrum Master
+Reyes Valenzuela, Renato German
+Facilitar el trabajo del equipo; eliminar impedimentos; organizar sprints y reuniones de avance; velar por la aplicación de buenas prácticas de desarrollo ágil y asegurar fluidez en el trabajo colaborativo
+Asesor/Cliente
+Castañeda Vargas, Pedro (Asesor)
+Definir la visión del producto; validar el enfoque del proyecto; revisar entregables clave; proporcionar guía metodológica y asegurar que la solución responda al problema planteado.
+
+Stakeholders y Usuarios
+
+Stakeholders
+Necesidades 
+Entregables
+Comité de Proyectos / Jurado académico
+Contar con visibilidad del avance, el cumplimiento de hitos y la coherencia del proyecto con los objetivos académicos y el problema de la judicialización en salud.
+- Project Charter / Acta de Constitución del proyecto.
+- Memoria del Proyecto (documento final).
+- Informes de avance y actas de reuniones clave.
+Cliente institucional (Hospital público /  u hospital de referencia)
+Definir con claridad el problema médico-legal, validar que la solución apoye la gestión de riesgos, el consentimiento informado y la documentación probatoria, y revisar prototipos funcionales.
+- Propuesta de implementación de la Plataforma Web de asesoramiento médico-legal.
+- Versión funcional de la plataforma en entorno de pruebas.
+- Informe de resultados y recomendaciones para su futura adopción.
+Sponsor académico / Coordinación de Taller
+Verificar que el proyecto se integre al portafolio de iniciativas del curso, cumpla tiempos, alcance y criterios de calidad definidos para TP1 y TP2.
+- Acta de Constitución aprobada.
+- Cronograma de trabajo actualizado.
+- Reportes de desempeño (riesgos, issues, avances) del proyecto.
+Dirección / Oficina de Calidad y Gestión de Riesgos del hospital
+Disponer de una herramienta que mejore la trazabilidad de eventos clínicos, la calidad del consentimiento informado y la gestión de reclamos médico-legales.
+- Panel de indicadores de riesgo médico-legal y cumplimiento de consentimientos.
+- Reportes agregados sobre eventos, documentación y alertas de riesgo.
+- Manual de uso para Calidad y Gestión de Riesgos.
+Oficina de Asesoría Jurídica / Médico-Legal
+Acceder a información probatoria estructurada (línea de tiempo, consentimientos, logs) para apoyar la defensa técnica y el análisis de responsabilidad.
+- Módulo de línea de tiempo probatoria con exportación de reportes.
+- Documentación funcional sobre el uso de la plataforma en auditorías y pericias.
+- Guía de buenas prácticas para aprovechamiento probatorio del sistema.
+Equipo de TI / Infraestructura del hospital
+Garantizar que la solución sea segura, trazable, integrable con la infraestructura existente y administrable (usuarios, accesos, respaldos).
+- Documentación técnica de arquitectura y microservicios.
+- Guía de despliegue y configuración (servidor, BD PostgreSQL, repositorio cifrado de documentos).
+- Configuración de accesos, perfiles, seguridad y monitoreo/logs.
+
+Usuarios
+Necesidades 
+Entregables
+Médicos y obstetras de hospitales públicos
+Registrar de forma rápida y estructurada consentimientos informados, decisiones clínicas clave y eventos relevantes; recibir alertas y recomendaciones médico-legales comprensibles que les ayuden a reducir su vulnerabilidad frente a reclamos.
+- Módulo de login seguro con roles clínicos.
+- Panel clínico con registro de consentimientos, eventos y checklists dinámicos.
+-Módulo de recomendaciones médico-legales basadas en IA/ML con explicaciones básicas y banderas de riesgo.
+Enfermería y otros profesionales asistenciales
+Documentar intervenciones, comunicaciones con el paciente/familia y observaciones relevantes que respalden la trazabilidad del cuidado y faciliten la reconstrucción del caso.
+- Formularios de registro de notas y eventos asistenciales vinculados al episodio clínico.
+- Línea de tiempo probatoria que integre notas de enfermería y eventos clave.
+- Vistas resumidas para revisar lo documentado antes de altas, traslados o derivaciones.
+Oficina de Calidad y Gestión de Riesgos Clínicos
+Monitorizar eventos con potencial impacto médico-legal, seguimiento de consentimientos, cumplimiento de protocolos y patrones de reclamos para priorizar acciones de mejora.
+- Dashboards de riesgo médico-legal (por servicio, tipo de procedimiento, tipo de evento).
+- Reportes agregados sobre cumplimiento de consentimientos y documentación probatoria.
+- Exportación de informes para comités de calidad y reuniones de morbi-mortalidad.
+Asesoría Jurídica / Médico-Legal del hospital
+Acceder a una reconstrucción clara y cronológica del caso, con documentos asociados y trazabilidad técnica (logs) para la defensa institucional y la valoración de responsabilidad.
+- Módulo de línea de tiempo probatoria con filtros por caso, servicio y fecha.
+- Exportación de reportes probatorios (PDF/Excel) con eventos, consentimientos y adjuntos relevantes.
+- Acceso a logs de auditoría (quién registró o modificó qué y cuándo).
+
+Recursos requeridos
+Recursos Humanos
+Líder del Proyecto / Product Owner 
+1 (Augusto Mathias Leonardo Vasquez Requejo)
+Planificación general del proyecto, priorización del backlog, coordinación con stakeholders.
+ Desarrollador Front-end
+1 (Augusto Mathias Leonardo Vasquez Requejo)
+Desarrollo de interfaces en Next.js e integración con API Gateway.
+ Desarrollador Back-end
+1 (Renato German Reyes Valenzuela)
+Desarrollo de microservicios en Spring Boot y APIs REST.
+ Especialista en Machine Learning
+1 (Renato German Reyes Valenzuela)
+Diseño, entrenamiento y validación del modelo de IA (TensorFlow / PyTorch, FastAPI).
+ Especialista Cloud / DevOps
+1 (Augusto Mathias Leonardo Vasquez Requejo)
+Configuración de recursos en Azure, CI/CD, monitoreo y seguridad básica.
+  Tester / QA
+2 (Mathias Requejo, Renato Reyes)
+Pruebas unitarias, integrales y con usuarios, registro de incidencias.
+
+Recursos de Hardware
+Laptops de desarrollo (2):
+CPU: Intel Core i5 (6ta gen o superior)
+RAM: ≥ 16 GB
+Disco sólido SSD: ≥ 500 GB
+ 
+Conectividad:
+1 router con acceso estable a Internet para trabajo remoto y despliegues en Azure.
+
+Recursos de Software
+Entorno de desarrollo:
+Sistema operativo (Windows / Linux).
+Visual Studio Code u otro IDE.
+Node.js y dependencias para Next.js.
+JDK + Spring Boot para back-end.
+ Python 3.x con librerías de ML (TensorFlow / PyTorch, scikit-learn).
+ 
+Infraestructura y base de datos:
+Cuenta en Microsoft Azure (Azure App Service / Container Apps, Azure PostgreSQL, Azure Blob Storage).
+PostgreSQL como base de datos relacional principal.
+Gestión de proyecto y control de versiones:
+Repositorio en Git/GitHub.
+Herramienta de gestión de tareas (Trello, Azure DevOps o similar).
+Software del proyecto (resultado):
+Plataforma Web con IA para Detección Temprana de Ansiedad y Depresión, desplegada en Azure y accesible para los usuarios definidos.
+
+Fases e Hitos del Proyecto
+
+Hito del proyecto
+Fecha Estimada
+Entregables incluidos
+Prioridad
+H1
+TP1 – Semana 2 (Marzo 2026)
+Aprobación del Acta de Constitución e Identificación de Interesados (1.1, 1.4)
+Alta
+H2
+TP1 – Semana 4–5 (Abril 2026)
+Documento de Alcance y requisitos principales aprobados (1.2, 2.1 input)
+Alta
+H3
+TP1 – Semana 7–8 (Abril–Mayo 2026)
+Plan de Gestión del Proyecto + Matriz de Riesgos aprobados (1.3, 1.5)
+Alta
+H4
+TP1 – Semana 11–12 (Mayo 2026)
+Arquitectura del Sistema + Modelo de Datos validados (2.1, 2.2, 2.3)
+Alta
+H5
+TP1 – Semana 15–16 (Junio 2026)
+Diseño final del Modelo ML, dataset y pipeline aprobado (5.1, 5.2 diseño)
+Alta
+H6
+TP2 – Semana 4–5 (Agosto 2026)
+Frontend base, Microservicio ML, Microservicio Clínico-Legal y API Gateway implementados (3.x, 4.x)
+Alta
+H7
+TP2 – Semana 8–9 (Septiembre 2026)
+Pruebas unitarias, de integración y con usuarios completadas (7.2, 7.3)
+Alta
+H8
+TP2 – Semana 11–12 (Octubre 2026)
+Despliegue completo en Azure: BD, storage, microservicios y frontend (8.1, 6.x)
+Alta
+H9
+TP2 – Semana 14 (Octubre 2026)
+Primer ciclo de monitoreo y ajuste del modelo ML y la plataforma (7.x + 5.x)
+Alta
+H10
+TP2 – Semana 16 (Noviembre 2026)
+Entrega del Informe Final, Documentación Técnica y Manual de Usuario (8.4)
+Alta
+
+Enfoques del Trabajo
+
+Para fines de este trabajo se utilizará la Metodología Ágil Scrum, un conjunto de buenas prácticas para trabajar colaborativamente en equipo y obtener el mejor resultado posible del proyecto.E n Scrum se realizan entregas parciales y regulares del producto final (incrementos de la plataforma), priorizadas por el beneficio que aportan al cliente y a los usuarios finales (trabajadores, psicólogos, RRHH).
+ 
+Scrum es especialmente adecuado para este proyecto porque:
+Los requisitos pueden cambiar (nuevas necesidades de salud mental, nuevos cuestionarios, cambios en políticas de la empresa).
+Es importante obtener resultados pronto (MVP funcional que permita empezar a evaluar y mejorar).
+Se requiere innovación (uso de IA en salud mental), flexibilidad y retroalimentación constante de psicólogos y del cliente.
+ 
+El equipo trabajará en sprints con:
+ 
+Product Backlog priorizado por el Product Owner.
+Sprint Planning para seleccionar historias de usuario viables en cada iteración.
+Daily Scrum para identificar impedimentos temprano (riesgos emergentes).
+Sprint Review con stakeholders para validar el incremento.
+Sprint Retrospective para analizar qué funcionó, qué no, y ajustar procesos (mitigación continua de riesgos).
+
+Riesgos y Mitigación
+
+#
+Riesgo
+Probabilidad
+Impacto
+Estrategia de mitigación
+1
+Sobrecarga de trabajo académico/laboral del equipo que genere retrasos
+60 %
+Alto
+- Planificar sprints realistas con capacidad limitada (story points / horas) basada en disponibilidad real. - Priorizar siempre las historias de mayor valor (MVP primero). - Revisar capacidad en cada Sprint Planning y reajustar el alcance si es necesario.
+2
+Mala definición inicial del alcance y requisitos (lo que se construye no coincide con lo que el cliente espera)
+50 %
+Alto
+- Realizar sesiones de refinamiento de backlog con el cliente, RRHH y la psicóloga asesora. 
+- Usar historias de usuario con criterios de aceptación claros.
+- Validar periódicamente el alcance en Sprint Review y actualizar el Project Charter si se generan cambios mayores.
+3
+Cambios frecuentes en los requisitos por parte del cliente
+50 %
+Medio–Alto
+- Gestionar cambios vía Product Backlog: lo nuevo entra y se prioriza, lo menos importante se mueve hacia abajo.
+- Mantener una regla explícita: cambios mayores al alcance se negocian en términos de tiempo/esfuerzo (triángulo de proyecto)
+- Documentar acuerdos en actas de reunión.
+4
+Falta o baja calidad de datos para entrenar el modelo de IA
+40 %
+Alto
+- Empezar temprano con una fase exploratoria de datos (data exploration). 
+- Simular datos o usar datasets públicos de referencia mientras se consiguen datos reales. 
+- Definir desde el inicio con el cliente qué datos se podrán recolectar y con qué frecuencia.
+5
+Desempeño insuficiente del modelo (baja exactitud, falsos negativos altos, sesgos)
+50 %
+Alto
+- Definir objetivos de métricas (accuracy, sensibilidad y especificidad) desde el inicio. 
+- Planificar sprints específicos de experimentación de modelos (spikes técnicos). 
+- Validar resultados con la psicóloga asesora, ajustar umbrales y evitar que el modelo tome decisiones finales sin supervisión humana.
+6
+Problemas de seguridad y confidencialidad de los datos de salud mental
+30 %
+Alto
+- Aplicar estándares ISO 27001 / buenas prácticas OWASP: cifrado en tránsito (HTTPS), gestión de roles, control de accesos.
+- Minimizar datos sensibles almacenados (principio de mínima información).
+- Anonimizar datos para entrenamiento de IA. 
+- Definir y comunicar políticas de privacidad y consentimiento informado.
+7
+Dificultades técnicas con la infraestructura en Azure (despliegue, costos, configuraciones)
+40 %
+Medio–Alto
+- Realizar una prueba temprana de despliegue (PoC) con un entorno mínimo.
+- Usar recursos gratuitos o de bajo costo (tiers básicos) y monitorear el consumo.
+- Documentar el procedimiento de despliegue (IaC básico o scripts repetibles).
+8
+Falta de disponibilidad o baja participación de la psicóloga asesora
+30 %
+Alto
+- Acordar desde el inicio un calendario de hitos clínicos donde su participación es crítica (validar encuestas, interpretar métricas).
+- Preparar materiales claros y breves para revisión (resúmenes, mockups).
+- Definir suplentes o plan B mínimo para no detener completamente el avance técnico.
+9
+Problemas de usabilidad que dificulten la adopción por parte de los trabajadores
+40 %
+Medio
+- Incluir historias de usuario de UX / UI desde el inicio.
+- Hacer pruebas rápidas de usabilidad con pocos usuarios (test de guerrilla).
+- Ajustar flujos complejos en sprints sucesivos, priorizando simplicidad y claridad en preguntas de salud mental.
+10
+No completar los entregables de TP1/TP2 en las fechas del sílabo
+35 %
+Alto
+- Mapear claramente qué entregables académicos se asocian a cada hito (TP1: alcance, arquitectura, modelo IA; TP2: implementación, pruebas, despliegue).
+- Sincronizar el cronograma del proyecto con el calendario académico. - Usar cada Sprint Review como “checkpoint” para validar avances vs. entregables del curso.
+11
+Dificultad con las herramientas de trabajo (IDE, repositorios, integraciones)
+50 %
+Medio
+- Estandarizar el entorno de desarrollo (misma versión de Node, Java, Python). - Crear una guía rápida de instalación y uso de herramientas. 
+- Planificar un sprint 0 para dejar todo el entorno listo antes del desarrollo fuerte.
+12
+Riesgo ético: malinterpretación de los resultados de IA por parte de los usuarios
+30 %
+Alto
+- Incluir mensajes claros en la plataforma indicando que la IA es apoyo y no reemplaza diagnóstico clínico.
+- Diseñar reportes con lenguaje no alarmista, orientado a “riesgo” y “recomendaciones”, no a etiquetar diagnóstico definitivo.
+- Validar la redacción de textos con la psicóloga asesora.
+13
+Pérdida de código o configuración por mala gestión de versiones
+25 %
+Medio
+- Usar Git/GitHub desde el inicio, con ramas claras (main, develop, feature/*).
+- Hacer commits frecuentes y revisiones de código. 
+- Activar backups básicos del repositorio.
+14
+Baja coordinación interna del equipo (malas comunicaciones, acuerdos no claros)
+40 %
+Medio
+- Realizar Daily Scrum (aunque sea corta) para alinear prioridades y detectar bloqueos.
+- Registrar acuerdos de cada reunión en un espacio compartido (Drive, Notion, etc.).
+- Definir explícitamente responsabilidades de cada rol (PO, Dev Front, Dev Back, ML, DevOps).
+
+GLOSARIO
+
+Término
+Descripción
+Proceso
+Conjunto de actividades relacionadas que transforman insumos (documentos clínicos, notas médicas, eventos adversos, quejas, etc.) en un resultado específico, como un análisis médico-legal, un registro probatorio o una recomendación basada en IA para el usuario.
+Computación en la nube 
+Modelo de prestación de servicios tecnológicos —almacenamiento seguro, bases de datos, servidores, contenedores, autenticación— accesibles vía internet y administrados por un proveedor externo (Azure), garantizando disponibilidad, escalabilidad y seguridad para el sistema médico-legal.
+Plataforma de asesoramiento médico-legal
+Aplicación web diseñada para apoyar a médicos y establecimientos de salud en la gestión del riesgo médico-legal, incluyendo documentación probatoria, trazabilidad de decisiones, análisis de consistencia clínica y orientación basada en IA/ML.
+Inteligencia Artificial (IA)
+Conjunto de métodos computacionales capaces de analizar documentos clínicos, detectar patrones en eventos médico-legales, identificar riesgos y generar recomendaciones explicables mediante modelos entrenados en grandes volúmenes de datos.
+Machine Learning (Aprendizaje Automático)
+Subcampo de la IA que permite entrenar modelos a partir de datos clínicos, legales o operacionales (por ejemplo, notas médicas, tiempos de atención, cumplimiento de checklists) para estimar riesgo de litigiosidad, inconsistencias documentales o fallas de adherencia a guías.
+Modelo de IA / Modelo de Machine Learning
+Algoritmo entrenado con datos históricos (reclamos, documentación clínica, patrones de incumplimiento) que permite predecir el riesgo médico-legal, identificar brechas en el consentimiento informado o sugerir alertas de trazabilidad probatoria.
+Checklist médico-legal / Lista de verificación
+Instrumento estructurado que guía la documentación y verificación de pasos críticos (información al paciente, riesgos explicados, firma, testigos, notas de evolución), reduciendo omisiones que podrían generar responsabilidad legal.
+Microservicio
+Componente independiente encargado de una función específica del sistema (por ejemplo: microservicio de consentimiento informado, microservicio de documentación probatoria, microservicio de IA, microservicio de auditoría legal).
+Plataforma Web
+Sistema accesible desde cualquier navegador que integra front-end, back-end, base de datos, motor de IA y módulos médico-legales. Permite registrar eventos clínicos, gestionar consentimiento informado, revisar líneas de tiempo probatorias y generar reportes trazables.
+
+SIGLARIO
+
+Sigla
+Descripción
+QA (Quality Assurance / Aseguramiento de la Calidad)
+Conjunto de actividades y procesos (revisiones de requisitos, code review, pruebas funcionales, validación médico-legal, auditoría de logs y trazabilidad) orientados a garantizar que la plataforma web de asesoramiento médico-legal cumpla con los estándares de calidad técnica, clínica, jurídica y de seguridad definidos.
+OE (Objetivo Específico)
+Objetivo que descompone el objetivo general del proyecto, indicando logros concretos que se deben alcanzar, como: analizar el marco normativo, diseñar la arquitectura de la plataforma, implementar el prototipo web con IA/ML y validar su utilidad médico-legal en escenarios simulados.
+PMO (Project Management Office)
+Oficina o rol encargado de estandarizar y supervisar la gestión de proyectos. En el contexto académico de tu trabajo, equivale al comité / coordinación de Taller que revisa el avance, aprueba entregables (TP1, TP2) y vela por el cumplimiento de lineamientos metodológicos.
+IA (Inteligencia Artificial)
+Conjunto de técnicas que permiten a la plataforma analizar documentos clínicos, datos de casos, patrones de reclamos y registros probatorios para clasificar escenarios de riesgo, sugerir alertas y apoyar el asesoramiento médico-legal.
+ML (Machine Learning)
+Rama de la IA que entrena modelos a partir de datos histórico-clínicos y legales (reclamos, eventos adversos, registros de consentimiento, adherencia a guías) para predecir riesgo médico-legal, identificar brechas documentales o priorizar casos para revisión.
+API (Application Programming Interface)
+Conjunto de reglas y endpoints que permiten que el front-end, los microservicios clínicos, el módulo de IA y otros sistemas (por ejemplo, una HCE futura) se comuniquen de forma segura y estandarizada.
+MVP (Minimum Viable Product / Producto Mínimo Viable)
+Primera versión funcional de la plataforma web que incluye las capacidades esenciales: registro de casos, módulo de consentimiento informado, línea de tiempo probatoria básica, motor de IA inicial y paneles de visualización, suficiente para demostrar el concepto y obtener retroalimentación de médicos y asesores legales.
+PO (Product Owner)
+Rol responsable de representar la voz del usuario clínico-legal, priorizar el backlog (consentimiento, trazabilidad, alertas de IA, reportes), aclarar requisitos y decidir qué funcionalidades entran en cada sprint para maximizar el valor del sistema para médicos, hospitales y asesores legales.
+
+BIBLIOGRAFÍA
+
+Blumstein, J. F., McMichael, B. J., &amp; Storrow, A. B. (2023). Developing safe harbors to address malpractice liability and wasteful health care spending. JAMA Health Forum, 4(11), e233899. https://doi.org/10.1001/jamahealthforum.2023.3899
+
+Cestonaro, C., Delicati, A., Marcante, B., Caenazzo, L., &amp; Tozzo, P. (2023). Defining medical liability when artificial intelligence is applied on diagnostic algorithms: A systematic review. Frontiers in Medicine, 10. https://doi.org/10.3389/fmed.2023.1305756
+
+Defensoría del Pueblo. (2025). Informe Defensorial N.º 243: Supervisión a los Institutos Especializados de Salud de Lima y Regiones. https://www.defensoria.gob.pe/wp-content/uploads/2025/05/INFORME_DEFENSORIAL_243.pdf 
+
+APROBACIÓN 
+
+Nombre
+Cargo
+Firma
+Fecha
+Augusto Mathias Vasquez Requejo
+Project Manager
+
+6/12/2025
+Renato Reyes Valenzuela
+Scrum Master
+
+6/12/2025
+
+ANEXOS
+
+Organigrama de la empresa:
