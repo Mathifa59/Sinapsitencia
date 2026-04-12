@@ -1,14 +1,18 @@
-import { apiSuccess, apiError, simulateLatency } from "@/lib/api";
-import { mockCases, mockPatients } from "@/mocks/cases";
-import { mockDoctorProfiles } from "@/mocks/users";
-import type { LegalCase } from "@/types";
+import { apiSuccess, apiError } from "@/lib/api";
+import { createSupabaseServer } from "@/lib/supabase/server";
+import type { Database } from "@/lib/supabase/database.types";
 
-const cases: LegalCase[] = [...mockCases];
-
+/**
+ * GET /api/legal-cases
+ *
+ * Lista casos legales con filtros y paginación.
+ * Incluye relaciones: doctor (profiles), lawyer (profiles), patient.
+ * Query params: status, priority, doctorId, search, page, pageSize
+ */
 export async function GET(request: Request) {
-  await simulateLatency(200, 400);
-
+  const supabase = await createSupabaseServer();
   const { searchParams } = new URL(request.url);
+
   const status = searchParams.get("status");
   const priority = searchParams.get("priority");
   const doctorId = searchParams.get("doctorId");
@@ -16,59 +20,165 @@ export async function GET(request: Request) {
   const page = parseInt(searchParams.get("page") ?? "1");
   const pageSize = parseInt(searchParams.get("pageSize") ?? "20");
 
-  let result = [...cases];
+  // Query con relaciones embebidas (evita N+1)
+  let query = supabase
+    .from("cases")
+    .select(
+      `
+      *,
+      doctor:profiles!cases_doctor_id_fkey(id, name, email),
+      lawyer:profiles!cases_lawyer_id_fkey(id, name, email),
+      patient:patients!cases_patient_id_fkey(id, name, last_name, dni, phone, gender, blood_type)
+    `,
+      { count: "exact" }
+    );
 
-  if (status) result = result.filter((c) => c.status === status);
-  if (priority) result = result.filter((c) => c.priority === priority);
-  if (doctorId) result = result.filter((c) => c.doctorId === doctorId);
+  if (status) query = query.eq("status", status as Database["public"]["Enums"]["case_status"]);
+  if (priority) query = query.eq("priority", priority as Database["public"]["Enums"]["case_priority"]);
+  if (doctorId) query = query.eq("doctor_id", doctorId);
   if (search) {
-    const q = search.toLowerCase();
-    result = result.filter(
-      (c) =>
-        c.title.toLowerCase().includes(q) ||
-        c.description.toLowerCase().includes(q)
+    query = query.or(
+      `title.ilike.%${search}%,description.ilike.%${search}%`
     );
   }
 
-  const total = result.length;
-  const totalPages = Math.ceil(total / pageSize);
-  const start = (page - 1) * pageSize;
-  const data = result.slice(start, start + pageSize);
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+  query = query.range(from, to).order("created_at", { ascending: false });
 
-  return apiSuccess({ data, total, page, pageSize, totalPages });
+  const { data, error, count } = await query;
+
+  if (error) {
+    return apiError(`Error al obtener casos: ${error.message}`, 500);
+  }
+
+  const total = count ?? 0;
+  const totalPages = Math.ceil(total / pageSize);
+
+  // Transformar a formato API con relaciones aplanadas
+  const cases = (data ?? []).map((c) => {
+    const doctor = c.doctor as { id: string; name: string; email: string } | null;
+    const lawyer = c.lawyer as { id: string; name: string; email: string } | null;
+    const patient = c.patient as {
+      id: string;
+      name: string;
+      last_name: string;
+      dni: string;
+      phone: string | null;
+      gender: string;
+      blood_type: string | null;
+    } | null;
+
+    return {
+      id: c.id,
+      title: c.title,
+      description: c.description,
+      status: c.status,
+      priority: c.priority,
+      doctorId: c.doctor_id,
+      doctor: doctor
+        ? { id: doctor.id, fullName: doctor.name, email: doctor.email }
+        : undefined,
+      lawyerId: c.lawyer_id,
+      lawyer: lawyer
+        ? { id: lawyer.id, fullName: lawyer.name, email: lawyer.email }
+        : undefined,
+      patientId: c.patient_id,
+      patient: patient
+        ? {
+            id: patient.id,
+            fullName: `${patient.name} ${patient.last_name}`,
+            dni: patient.dni,
+            phone: patient.phone,
+            gender: patient.gender,
+            bloodType: patient.blood_type,
+          }
+        : undefined,
+      episodeId: c.episode_id,
+      notes: c.notes,
+      createdAt: c.created_at,
+      updatedAt: c.updated_at,
+    };
+  });
+
+  return apiSuccess({ data: cases, total, page, pageSize, totalPages });
 }
 
+/**
+ * POST /api/legal-cases
+ *
+ * Crea un nuevo caso legal.
+ * Body: { title, description, priority, doctorId, patientId?, episodeId?, notes? }
+ */
 export async function POST(request: Request) {
-  await simulateLatency(300, 500);
-
+  const supabase = await createSupabaseServer();
   const body = await request.json();
-  const { title, description, priority, doctorId, patientId, notes } = body;
 
-  if (!title || !description || !priority || !doctorId)
-    return apiError("Título, descripción, prioridad y doctorId son requeridos", 400);
+  const { title, description, priority, doctorId, patientId, episodeId, notes } = body;
 
-  const doctor = mockDoctorProfiles.find((d) => d.id === doctorId);
-  if (!doctor) return apiError("Médico no encontrado", 404);
+  if (!title || !description || !priority || !doctorId) {
+    return apiError(
+      "Título, descripción, prioridad y doctorId son requeridos",
+      400
+    );
+  }
 
-  const patient = patientId ? mockPatients.find((p) => p.id === patientId) : undefined;
-  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("cases")
+    .insert({
+      title,
+      description,
+      priority,
+      doctor_id: doctorId,
+      patient_id: patientId ?? null,
+      episode_id: episodeId ?? null,
+      notes: notes ?? null,
+    })
+    .select(
+      `
+      *,
+      doctor:profiles!cases_doctor_id_fkey(id, name, email),
+      patient:patients!cases_patient_id_fkey(id, name, last_name, dni)
+    `
+    )
+    .single();
 
-  const newCase: LegalCase = {
-    id: `c${Date.now()}`,
-    title,
-    description,
-    status: "nuevo",
-    priority,
-    doctorId,
-    doctor,
-    patientId,
-    patient,
-    documents: [],
-    notes,
-    createdAt: now,
-    updatedAt: now,
-  };
+  if (error) {
+    return apiError(`Error al crear caso: ${error.message}`, 500);
+  }
 
-  cases.push(newCase);
-  return apiSuccess(newCase, 201);
+  const doctor = data.doctor as { id: string; name: string; email: string } | null;
+  const patient = data.patient as {
+    id: string;
+    name: string;
+    last_name: string;
+    dni: string;
+  } | null;
+
+  return apiSuccess(
+    {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      status: data.status,
+      priority: data.priority,
+      doctorId: data.doctor_id,
+      doctor: doctor
+        ? { id: doctor.id, fullName: doctor.name, email: doctor.email }
+        : undefined,
+      patientId: data.patient_id,
+      patient: patient
+        ? {
+            id: patient.id,
+            fullName: `${patient.name} ${patient.last_name}`,
+            dni: patient.dni,
+          }
+        : undefined,
+      episodeId: data.episode_id,
+      notes: data.notes,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    },
+    201
+  );
 }
