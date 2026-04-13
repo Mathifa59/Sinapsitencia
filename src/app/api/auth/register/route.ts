@@ -1,26 +1,3 @@
-<<<<<<< HEAD
-import { apiSuccess, apiError, simulateLatency } from "@/lib/api";
-import { mockUsers } from "@/mocks/users";
-
-export async function POST(request: Request) {
-  await simulateLatency();
-
-  const body = await request.json();
-  const { name, email, role } = body;
-
-  if (!name || !email || !role) {
-    return apiError("Nombre, correo y rol son requeridos", 400);
-  }
-
-  const exists = mockUsers.some((u) => u.email === email);
-  if (exists) {
-    return apiError("Ya existe una cuenta con ese correo electrónico", 409);
-  }
-
-  return apiSuccess({
-    message: "Solicitud de acceso recibida. Recibirás un correo cuando tu cuenta sea activada.",
-  }, 201);
-=======
 import { apiSuccess, apiError } from "@/lib/api";
 import { createSupabaseServer } from "@/lib/supabase/server";
 
@@ -147,5 +124,4 @@ export async function POST(request: Request) {
       err instanceof Error ? err.message : "Error desconocido al registrar";
     return apiError(message, 500);
   }
->>>>>>> eb03f5647503b3e78cd4e58ff820bd5a577d7297
 }
