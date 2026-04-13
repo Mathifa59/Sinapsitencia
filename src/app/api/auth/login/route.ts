@@ -1,4 +1,5 @@
-import { apiSuccess, apiError } from "@/lib/api";
+import { NextResponse } from "next/server";
+import { apiError } from "@/lib/api";
 import { createSupabaseServer } from "@/lib/supabase/server";
 
 /**
@@ -9,7 +10,8 @@ import { createSupabaseServer } from "@/lib/supabase/server";
  *   1. Login por email/password → { email, password }
  *   2. Login por rol demo       → { role: "doctor" | "lawyer" | "admin" }
  *
- * La sesión se guarda automáticamente en cookies httpOnly.
+ * Setea la cookie `sinapsistencia-role` que el proxy usa para proteger rutas.
+ * La sesión de Supabase se guarda automáticamente en cookies httpOnly.
  */
 
 // Cuentas demo — deben existir en Supabase Auth
@@ -18,6 +20,36 @@ const DEMO_ACCOUNTS: Record<string, { email: string; password: string }> = {
   lawyer: { email: "lawyer.demo@sinapsistencia.pe", password: "Demo123456!" },
   admin: { email: "admin.demo@sinapsistencia.pe", password: "Demo123456!" },
 };
+
+/** Construye respuesta exitosa con la cookie de rol seteada */
+function loginSuccess(
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    role: string;
+    isActive: boolean;
+    createdAt: string;
+    avatar: string | null;
+  },
+  token: string
+) {
+  const response = NextResponse.json(
+    { success: true, data: { user, token } },
+    { status: 200 }
+  );
+
+  // Setear cookie de rol para el proxy (protección de rutas por rol)
+  response.cookies.set("sinapsistencia-role", user.role, {
+    path: "/",
+    httpOnly: false, // El proxy necesita leerla
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7, // 7 días
+  });
+
+  return response;
+}
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServer();
@@ -47,10 +79,11 @@ export async function POST(request: Request) {
       .eq("id", data.user.id)
       .single();
 
-    if (!profile) return apiError("Perfil no encontrado para la cuenta demo", 404);
+    if (!profile)
+      return apiError("Perfil no encontrado para la cuenta demo", 404);
 
-    return apiSuccess({
-      user: {
+    return loginSuccess(
+      {
         id: profile.id,
         email: profile.email,
         name: profile.name,
@@ -59,8 +92,8 @@ export async function POST(request: Request) {
         createdAt: profile.created_at,
         avatar: profile.avatar_url,
       },
-      token: data.session.access_token,
-    });
+      data.session.access_token
+    );
   }
 
   // ── Modo 2: login por email + password ───────────────────────────
@@ -93,8 +126,8 @@ export async function POST(request: Request) {
     return apiError("Tu cuenta ha sido desactivada", 403);
   }
 
-  return apiSuccess({
-    user: {
+  return loginSuccess(
+    {
       id: profile.id,
       email: profile.email,
       name: profile.name,
@@ -103,6 +136,6 @@ export async function POST(request: Request) {
       createdAt: profile.created_at,
       avatar: profile.avatar_url,
     },
-    token: data.session.access_token,
-  });
+    data.session.access_token
+  );
 }

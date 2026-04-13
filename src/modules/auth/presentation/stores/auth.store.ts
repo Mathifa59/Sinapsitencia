@@ -72,7 +72,13 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () => {
+      logout: async () => {
+        try {
+          const repository = await getAuthRepository();
+          await repository.logout();
+        } catch {
+          // Continuar limpiando estado local aunque falle el API
+        }
         clearAuthCookie();
         set({ user: null, token: null, isAuthenticated: false, error: null });
       },

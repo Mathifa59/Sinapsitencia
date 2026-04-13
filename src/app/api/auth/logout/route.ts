@@ -1,19 +1,26 @@
-import { apiSuccess, apiError } from "@/lib/api";
+import { NextResponse } from "next/server";
 import { createSupabaseServer } from "@/lib/supabase/server";
 
 /**
  * POST /api/auth/logout
  *
  * Cierra la sesión del usuario en Supabase Auth.
- * Elimina las cookies de sesión.
+ * Elimina la cookie `sinapsistencia-role` y las cookies de sesión.
  */
 export async function POST() {
   const supabase = await createSupabaseServer();
-  const { error } = await supabase.auth.signOut();
+  await supabase.auth.signOut();
 
-  if (error) {
-    return apiError("Error al cerrar sesión", 500);
-  }
+  const response = NextResponse.json(
+    { success: true, data: { message: "Sesión cerrada correctamente" } },
+    { status: 200 }
+  );
 
-  return apiSuccess({ message: "Sesión cerrada correctamente" });
+  // Limpiar cookie de rol
+  response.cookies.set("sinapsistencia-role", "", {
+    path: "/",
+    maxAge: 0,
+  });
+
+  return response;
 }
