@@ -1,23 +1,42 @@
-import { apiSuccess, apiError, simulateLatency } from "@/lib/api";
-import { mockUsers } from "@/mocks/users";
+import { apiSuccess, apiError } from "@/lib/api";
+import { createSupabaseServer } from "@/lib/supabase/server";
 
-export async function GET(request: Request) {
-  await simulateLatency(100, 300);
+/**
+ * GET /api/auth/me
+ *
+ * Devuelve los datos del usuario autenticado.
+ * Valida el JWT con Supabase Auth (no solo lee cookies).
+ */
+export async function GET() {
+  const supabase = await createSupabaseServer();
 
-  const token = request.headers.get("Authorization")?.replace("Bearer ", "");
-  if (!token) return apiError("No autorizado", 401);
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  // Extraer userId del mock token (formato: mock-token-{userId})
-  const userId = token.replace("mock-token-", "");
-  const user = mockUsers.find((u) => u.id === userId);
-  if (!user) return apiError("Sesión no válida", 401);
+  if (error || !user) {
+    return apiError("No autorizado", 401);
+  }
+
+  // Obtener perfil completo
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile) {
+    return apiError("Perfil no encontrado", 404);
+  }
 
   return apiSuccess({
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    isActive: user.isActive,
-    createdAt: user.createdAt,
+    id: profile.id,
+    email: profile.email,
+    name: profile.name,
+    role: profile.role,
+    isActive: profile.is_active,
+    createdAt: profile.created_at,
+    avatar: profile.avatar_url,
   });
 }

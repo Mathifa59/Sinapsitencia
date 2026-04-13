@@ -262,6 +262,8 @@ Plataforma médico-legal para la protección de profesionales de la salud.
 
 ## Épica 3: Gestión de Casos Legales
 
+> **Alcance:** Este módulo es exclusivo de médicos y abogados. El administrador hospitalario **no tiene visibilidad** sobre los casos legales, ya que corresponden a la defensa profesional personal del médico y son confidenciales respecto a la institución.
+
 ---
 
 ### HU-011 · Listado de casos del médico
@@ -334,23 +336,29 @@ Plataforma médico-legal para la protección de profesionales de la salud.
 
 ---
 
-### HU-014 · Listado de episodios clínicos (vista administrador)
+### HU-014 · Gestión de episodios clínicos hospitalarios (vista administrador)
 
-**Como** administrador,
-**quiero** ver todos los casos legales del sistema,
-**para** supervisar el estado de los procesos médico-legales de la institución.
+**Como** administrador del hospital,
+**quiero** registrar y visualizar los episodios clínicos asociados a pacientes (ingresos, intervenciones, altas),
+**para** llevar el control de la actividad asistencial de la institución, independientemente de los procesos legales del médico.
+
+> **Nota:** Los episodios clínicos son registros hospitalarios (ingreso, diagnóstico, alta) y NO deben confundirse con los casos legales que el médico gestiona de forma privada con su abogado. El administrador no tiene acceso a estos últimos.
 
 **Criterios de Aceptación:**
 
-- Se muestra una tabla con: título, paciente, médico responsable, estado, fecha de inicio.
-- Incluye un botón para crear nuevos episodios.
-- Muestra el total de episodios registrados.
+- Se muestra una tabla con: título del episodio, paciente, médico responsable, diagnóstico, estado (activo/cerrado/archivado), fecha de inicio.
+- Se puede crear un nuevo episodio clínico desde un modal con: paciente, médico, título, descripción, diagnóstico (opcional), fecha de inicio.
+- El estado de un episodio puede cambiarse a "cerrado" cuando el paciente recibe el alta.
+- Se muestra el total de episodios registrados.
+- La tabla permite búsqueda por nombre de paciente o médico responsable.
 
 **Definition of Done:**
 
-- [ ] Página /admin/episodes consume todos los casos sin filtrar por médico.
-- [ ] CaseStatusBadge para el estado de cada fila.
-- [ ] Modal de creación de caso integrado.
+- [ ] Página /admin/episodes consume GET /api/episodes (entidad ClinicalEpisode, no LegalCase).
+- [ ] Modal de creación con formulario validado (Zod): paciente, médico, título, descripción, fecha inicio.
+- [ ] Botón de cambio de estado (activo → cerrado → archivado).
+- [ ] Búsqueda funcional por paciente y médico.
+- [ ] Sin acceso al módulo de casos legales desde esta vista.
 - [ ] Sin errores de TypeScript.
 
 ---
@@ -823,6 +831,291 @@ Plataforma médico-legal para la protección de profesionales de la salud.
 - [ ] Validación de campos con Zod.
 - [ ] Mensaje de confirmación tras envío.
 - [ ] Enlace funcional a /login.
+- [ ] Sin errores de TypeScript.
+
+---
+
+## Épica 11: Firmas Digitales y Consentimiento Informado
+
+---
+
+### HU-034 · Firma de un documento por parte del médico
+
+**Como** médico,
+**quiero** registrar mi firma en un documento clínico-legal desde la plataforma,
+**para** validar el documento con mi autoría de forma legalmente trazable.
+
+**Criterios de Aceptación:**
+
+- El botón "Firmar documento" aparece en el detalle del documento cuando el estado es "pendiente_firma".
+- Al hacer click, se abre un modal de confirmación que muestra el nombre del firmante, la fecha/hora y el tipo de firma (digital).
+- Al confirmar, se crea un `SignatureRecord` asociado al documento con tipo `digital`, fecha actual y `isValid: true`.
+- El documento pasa automáticamente a estado "firmado" si se alcanza el número mínimo de firmas requeridas.
+- La firma registrada aparece en la sección de firmas del detalle del documento.
+- No se puede volver a firmar un documento que ya fue firmado por el mismo usuario.
+
+**Definition of Done:**
+
+- [ ] Modal de confirmación de firma implementado.
+- [ ] Integración con POST /api/documents/:id/signatures.
+- [ ] `SignatureRecord` creado con tipo `digital`, fecha, isValid=true y hash generado.
+- [ ] Estado del documento actualizado automáticamente si el criterio de firmas se cumple.
+- [ ] Sección de firmas en el modal de detalle muestra la nueva firma.
+- [ ] Botón no visible si el usuario ya firmó el documento.
+- [ ] Invalidación de cache TanStack Query tras la firma.
+- [ ] Sin errores de TypeScript.
+
+---
+
+### HU-035 · Gestión de registros de consentimiento informado
+
+**Como** médico,
+**quiero** generar y hacer seguimiento de registros de consentimiento informado asociados a un documento,
+**para** asegurar que el paciente autorizó el acto médico de forma explícita y trazable.
+
+**Criterios de Aceptación:**
+
+- Desde el detalle de un documento de tipo "Consentimiento Informado", se puede crear un registro de consentimiento.
+- El formulario solicita: paciente (obligatorio), fecha de expiración (opcional), notas (opcional).
+- El registro se crea con estado "pendiente".
+- Se listan los consentimientos asociados al documento con: paciente, estado, fecha de firma, fecha de expiración.
+- El estado puede actualizarse a "firmado" o "rechazado".
+- Un consentimiento expirado se muestra con badge diferenciado.
+
+**Definition of Done:**
+
+- [ ] Sección de consentimientos en el modal de detalle de documentos tipo "Consentimiento Informado".
+- [ ] Formulario de creación con validación Zod.
+- [ ] Integración con POST /api/documents/:id/consents.
+- [ ] Integración con PATCH /api/consents/:id para cambio de estado.
+- [ ] Badges de estado: pendiente, firmado, rechazado, expirado (usando `CONSENT_STATUS_LABELS`).
+- [ ] Invalidación de cache tras cada acción.
+- [ ] Sin errores de TypeScript.
+
+---
+
+## Épica 12: Gestión de Archivos Adjuntos
+
+---
+
+### HU-036 · Adjuntar documentos a un caso legal
+
+**Como** médico,
+**quiero** adjuntar archivos (PDF, imágenes, documentos clínicos) a un caso legal,
+**para** consolidar toda la evidencia relevante en un único lugar.
+
+**Criterios de Aceptación:**
+
+- En la página de detalle de un caso, existe un botón "Adjuntar" en la sección de documentos.
+- Al hacer click, se abre un selector de archivos que acepta: PDF, PNG, JPG, DOCX (máx. 10 MB por archivo).
+- El archivo se sube y queda vinculado al caso.
+- La lista de adjuntos muestra: nombre del archivo, tipo, tamaño, fecha de carga y botón de descarga.
+- Si el archivo supera el límite de tamaño, se muestra un error antes de iniciar la carga.
+- El botón "Adjuntar" está deshabilitado durante la subida.
+
+**Definition of Done:**
+
+- [ ] Selector de archivos con validación de tipo y tamaño en el cliente.
+- [ ] Integración con POST /api/legal-cases/:id/attachments (multipart/form-data).
+- [ ] Listado de adjuntos consumido desde GET /api/legal-cases/:id/attachments.
+- [ ] Botón de descarga funcional por archivo.
+- [ ] Estado de carga visible durante la subida.
+- [ ] Mensaje de error si el archivo es inválido.
+- [ ] Invalidación de cache tras adjuntar.
+- [ ] Sin errores de TypeScript.
+
+---
+
+## Épica 3 (continuación): Gestión de Casos Legales
+
+---
+
+### HU-037 · Asignación de abogado a un caso legal
+
+**Como** médico,
+**quiero** asignar un abogado directamente a mi caso legal,
+**para** formalizar la relación profesional dentro de mi expediente.
+
+**Criterios de Aceptación:**
+
+- En el detalle de un caso, si no hay abogado asignado, se muestra un botón "Asignar abogado".
+- Al hacer click, se abre un selector de abogados disponibles (con nombre, CAB y especialidades).
+- Al confirmar la selección, el abogado queda vinculado al caso.
+- La información del abogado asignado se muestra en la sección correspondiente del detalle.
+- Solo se puede tener un abogado asignado por caso. Si ya hay uno asignado, se muestra un botón "Cambiar abogado".
+- El abogado asignado puede ver el caso en su lista de casos activos.
+
+**Definition of Done:**
+
+- [ ] Botón "Asignar abogado" / "Cambiar abogado" contextual en el detalle del caso.
+- [ ] Modal de selección de abogado con datos del directorio.
+- [ ] Integración con PUT /api/legal-cases/:id/assign-lawyer.
+- [ ] Llama al método `assignLawyer(caseId, lawyerId)` del repositorio de casos.
+- [ ] Detalle del caso refleja inmediatamente al abogado asignado.
+- [ ] Invalidación de cache tras la asignación.
+- [ ] Sin errores de TypeScript.
+
+---
+
+### HU-038 · Edición de notas de un caso legal
+
+**Como** médico,
+**quiero** editar las notas de un caso legal después de su creación,
+**para** agregar contexto, actualizaciones o información relevante conforme avanza el caso.
+
+**Criterios de Aceptación:**
+
+- En el detalle de un caso, el campo de notas tiene un botón de edición (ícono lápiz).
+- Al hacer click, el campo de notas se convierte en un textarea editable con el contenido actual.
+- Hay botones "Guardar" y "Cancelar".
+- Al guardar, el cambio se persiste y el campo vuelve al modo solo lectura.
+- Al cancelar, se descarta el cambio y el campo vuelve a su valor anterior.
+- Si el campo está vacío, se muestra un placeholder "Sin notas".
+
+**Definition of Done:**
+
+- [ ] Modo edición inline del campo de notas en el detalle del caso.
+- [ ] Integración con PATCH /api/legal-cases/:id con payload `{ notes: string }`.
+- [ ] Validación mínima: notas no supera 2000 caracteres.
+- [ ] Estado de carga durante el guardado.
+- [ ] Mensaje de error si falla la actualización.
+- [ ] Invalidación de cache tras guardar.
+- [ ] Sin errores de TypeScript.
+
+---
+
+## Épica 4 (continuación): Vinculación Médico-Abogado
+
+---
+
+### HU-039 · Mensaje de respuesta al gestionar solicitudes de contacto
+
+**Como** abogado,
+**quiero** incluir un mensaje personalizado al aceptar o rechazar una solicitud de contacto,
+**para** comunicarle al médico mis razones o próximos pasos de forma profesional.
+
+**Criterios de Aceptación:**
+
+- Al hacer click en "Aceptar" o "Rechazar", se abre un modal con un campo de mensaje opcional.
+- El mensaje tiene un placeholder contextual según la acción ("Estaré encantado de ayudarte..." / "Por el momento no puedo atender este caso...").
+- Al confirmar, el estado de la solicitud se actualiza junto con el `responseMessage`.
+- El médico puede ver el mensaje de respuesta en el historial de su solicitud.
+- Si no se ingresa mensaje, se guarda la respuesta sin texto adicional.
+
+**Definition of Done:**
+
+- [ ] Modal de respuesta con campo de mensaje opcional para Aceptar y Rechazar.
+- [ ] Integración con PATCH /api/matching/contact-requests/:id con payload `{ status, responseMessage }`.
+- [ ] `responseMessage` visible en la vista de historial de solicitudes del médico.
+- [ ] Invalidación de cache tras la respuesta.
+- [ ] Sin errores de TypeScript.
+
+---
+
+## Épica 9 (continuación): Perfil de Usuario
+
+---
+
+### HU-040 · Toggle de disponibilidad del abogado
+
+**Como** abogado,
+**quiero** indicar si estoy disponible para aceptar nuevos casos desde mi perfil,
+**para** que los médicos y el sistema de recomendaciones solo me sugieran cuando puedo atender.
+
+**Criterios de Aceptación:**
+
+- En la página de perfil del abogado, se muestra un toggle de disponibilidad con estado actual (Disponible / No disponible).
+- Al cambiar el toggle, el estado se persiste inmediatamente.
+- El campo `available` del perfil del abogado se actualiza en la API.
+- Los abogados marcados como no disponibles no aparecen en el listado de recomendaciones del médico.
+- Se muestra confirmación visual tras el cambio (toast o badge actualizado).
+
+**Definition of Done:**
+
+- [ ] Toggle de disponibilidad integrado en /lawyer/profile.
+- [ ] Integración con PATCH /api/lawyers/:id con payload `{ available: boolean }`.
+- [ ] Cambio reflejado inmediatamente en el estado del componente.
+- [ ] Abogados con `available: false` excluidos del endpoint GET /api/matching/lawyers.
+- [ ] Confirmación visual tras el cambio.
+- [ ] Sin errores de TypeScript.
+
+---
+
+## Épica 2 (continuación): Gestión Documental Clínica-Legal
+
+---
+
+### HU-041 · Historial de versiones de un documento
+
+**Como** médico o administrador,
+**quiero** ver el historial completo de versiones de un documento y poder consultar el contenido de cada versión,
+**para** auditar los cambios realizados y verificar qué se modificó en cada revisión.
+
+**Criterios de Aceptación:**
+
+- En el modal de detalle del documento, la sección "Versiones" lista todas las versiones con: número de versión, autor, fecha y notas del cambio.
+- Al hacer click en una versión, se expande el contenido de esa versión en un panel de solo lectura.
+- La versión actual está visualmente destacada (badge "Actual").
+- Si solo existe una versión, se muestra el mensaje "Sin historial de cambios previos".
+- Los datos de versión provienen de `DocumentVersionEntity[]` del repositorio.
+
+**Definition of Done:**
+
+- [ ] Sección de historial de versiones expandible en el modal de detalle.
+- [ ] Panel de contenido de versión en modo solo lectura.
+- [ ] Badge "Actual" en la última versión.
+- [ ] Estado vacío cuando solo existe la versión 1.
+- [ ] Datos consumidos desde GET /api/documents/:id/versions.
+- [ ] Sin errores de TypeScript.
+
+---
+
+### HU-042 · Búsqueda y filtrado avanzado de documentos
+
+**Como** médico o administrador,
+**quiero** filtrar los documentos por tipo, estado y rango de fechas, además de buscar por texto,
+**para** localizar documentos específicos de manera más precisa en listados extensos.
+
+**Criterios de Aceptación:**
+
+- La tabla de documentos incluye, además de la búsqueda por texto, filtros por: tipo de documento, estado y rango de fechas (desde/hasta).
+- Los filtros son opcionales y combinables entre sí.
+- Al aplicar filtros, la tabla se actualiza mostrando solo los documentos que cumplen todos los criterios.
+- Existe un botón "Limpiar filtros" que restablece todos los filtros a su estado inicial.
+- Se muestra el total de documentos filtrados.
+
+**Definition of Done:**
+
+- [ ] Controles de filtro (selects y date pickers) integrados sobre la tabla de documentos.
+- [ ] Filtros enviados como query params al endpoint GET /api/documents.
+- [ ] Botón "Limpiar filtros" funcional.
+- [ ] Conteo de documentos actualizado según filtros.
+- [ ] Estado vacío visible cuando ningún documento cumple los filtros.
+- [ ] Sin errores de TypeScript.
+
+---
+
+### HU-043 · Exportar listado de auditoría a CSV
+
+**Como** administrador,
+**quiero** exportar el registro de auditoría a un archivo CSV,
+**para** compartirlo con auditores externos o integrarlo a herramientas de análisis.
+
+**Criterios de Aceptación:**
+
+- En la página de auditoría existe un botón "Exportar CSV".
+- Al hacer click, se descarga un archivo `.csv` con los registros visibles (aplicando los filtros actuales de búsqueda).
+- El CSV incluye columnas: Usuario, Rol, Acción, Recurso, Descripción, IP, Fecha/Hora.
+- El nombre del archivo incluye la fecha de exportación (ej. `auditoria-2025-06-01.csv`).
+- Si no hay registros, el botón está deshabilitado.
+
+**Definition of Done:**
+
+- [ ] Botón "Exportar CSV" en /admin/audit.
+- [ ] Generación del CSV en el cliente a partir de los datos cargados.
+- [ ] Descarga automática del archivo con nombre que incluye la fecha.
+- [ ] Columnas correctas y valores correctamente escapados.
+- [ ] Botón deshabilitado cuando no hay registros.
 - [ ] Sin errores de TypeScript.
 
 ---

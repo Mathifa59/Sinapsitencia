@@ -7,30 +7,28 @@ import type {
 } from "../../domain/repositories/IDocumentRepository";
 import type { DocumentEntity, DocumentStatus } from "../../domain/entities/document.entity";
 
-// Tipo crudo que retorna la API (fechas como strings)
+// Tipo crudo que retorna la API (ya camelCase, relaciones aplanadas)
 interface DocumentRaw {
   id: string;
   title: string;
   type: DocumentEntity["type"];
   status: DocumentEntity["status"];
   patientId?: string;
-  patient?: { name: string; lastName: string };
+  patient?: { id: string; name: string; lastName: string; fullName?: string };
   authorId: string;
-  author: { id: string; name: string };
+  authorName: string;
   currentVersionId: string;
   versions: Array<{
     id: string;
     version: number;
     content: string;
     createdById: string;
-    createdBy: { name: string };
     createdAt: string;
     notes?: string;
   }>;
   signatures: Array<{
     id: string;
     signerId: string;
-    signer: { name: string };
     type: "digital" | "huella" | "firma_manuscrita";
     signedAt: string;
     isValid: boolean;
@@ -47,23 +45,25 @@ function toEntity(raw: DocumentRaw): DocumentEntity {
     type: raw.type,
     status: raw.status,
     patientId: raw.patientId,
-    patientName: raw.patient ? `${raw.patient.name} ${raw.patient.lastName}` : undefined,
+    patientName: raw.patient
+      ? raw.patient.fullName ?? `${raw.patient.name} ${raw.patient.lastName}`
+      : undefined,
     authorId: raw.authorId,
-    authorName: raw.author.name,
+    authorName: raw.authorName,
     currentVersionId: raw.currentVersionId,
-    versions: raw.versions.map((v) => ({
+    versions: (raw.versions ?? []).map((v) => ({
       id: v.id,
       version: v.version,
       content: v.content,
       createdById: v.createdById,
-      createdByName: v.createdBy.name,
+      createdByName: "",
       createdAt: new Date(v.createdAt),
       notes: v.notes,
     })),
-    signatures: raw.signatures.map((s) => ({
+    signatures: (raw.signatures ?? []).map((s) => ({
       id: s.id,
       signerId: s.signerId,
-      signerName: s.signer.name,
+      signerName: "",
       type: s.type,
       signedAt: new Date(s.signedAt),
       isValid: s.isValid,

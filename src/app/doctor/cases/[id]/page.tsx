@@ -118,8 +118,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
             {legalCase.lawyer ? (
               <div className="space-y-1.5 text-sm">
                 <p className="font-medium text-slate-800">{legalCase.lawyer.fullName}</p>
-                <p className="text-slate-500">{legalCase.lawyer.specialties.join(", ")}</p>
-                <p className="text-slate-500">{legalCase.lawyer.phone}</p>
+                {legalCase.lawyer.email && <p className="text-slate-500">{legalCase.lawyer.email}</p>}
               </div>
             ) : (
               <div className="text-center py-2">

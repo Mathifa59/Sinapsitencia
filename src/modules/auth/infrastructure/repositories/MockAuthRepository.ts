@@ -9,6 +9,14 @@ const ROLE_BY_EMAIL: Record<string, UserRole> = {
   "abg.vasquez@legal.pe": "lawyer",
   "abg.flores@legal.pe": "lawyer",
   "admin@hngai.pe": "admin",
+  "mathiwen519@gmail.com": "admin",
+  "natoreyes0211@gmail.com": "admin",
+};
+
+/** Usuarios con contraseña protegida */
+const PROTECTED_USERS: Record<string, string> = {
+  "mathiwen519@gmail.com": "12345678",
+  "natoreyes0211@gmail.com": "12345678",
 };
 
 function toSessionEntity(userId: string): SessionEntity {
@@ -38,7 +46,15 @@ export class MockAuthRepository implements IAuthRepository {
     await new Promise((r) => setTimeout(r, 500));
     const role = ROLE_BY_EMAIL[credentials.email];
     if (!role) throw new Error("Credenciales incorrectas");
-    const userId = ROLE_USER_ID[role];
+
+    // Validar contraseña para usuarios protegidos
+    if (PROTECTED_USERS[credentials.email] && PROTECTED_USERS[credentials.email] !== credentials.password) {
+      throw new Error("Credenciales incorrectas");
+    }
+
+    // Buscar usuario directamente por email (para cuentas propias) o por rol (demo)
+    const directUser = mockUsers.find((u) => u.email === credentials.email);
+    const userId = directUser?.id ?? ROLE_USER_ID[role];
     return toSessionEntity(userId);
   }
 
