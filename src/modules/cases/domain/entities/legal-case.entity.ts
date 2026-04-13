@@ -12,20 +12,14 @@ export interface PatientSnapshot {
 
 export interface LawyerSnapshot {
   id: string;
-  userId: string;
   fullName: string;
-  cab: string;
-  specialties: string[];
-  phone: string;
+  email?: string;
 }
 
 export interface DoctorSnapshot {
   id: string;
-  userId: string;
   fullName: string;
-  cmp: string;
-  specialty: string;
-  hospital: string;
+  email?: string;
 }
 
 export interface LegalCaseEntity {

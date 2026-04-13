@@ -19,20 +19,12 @@ function toEntity(raw: (typeof mockCases)[0]): LegalCaseEntity {
     doctorId: raw.doctorId,
     doctor: {
       id: raw.doctor.id,
-      userId: raw.doctor.userId,
       fullName: raw.doctor.user.name,
-      cmp: raw.doctor.cmp,
-      specialty: raw.doctor.specialty,
-      hospital: raw.doctor.hospital,
     },
     lawyer: raw.lawyer
       ? {
           id: raw.lawyer.id,
-          userId: raw.lawyer.userId,
           fullName: raw.lawyer.user.name,
-          cab: raw.lawyer.cab,
-          specialties: raw.lawyer.specialties,
-          phone: raw.lawyer.phone,
         }
       : undefined,
     patient: raw.patient
@@ -108,11 +100,7 @@ export class MockCaseRepository implements ICaseRepository {
       doctorId: data.doctorId,
       doctor: {
         id: doctor.id,
-        userId: doctor.userId,
         fullName: doctor.user.name,
-        cmp: doctor.cmp,
-        specialty: doctor.specialty,
-        hospital: doctor.hospital,
       },
       documentIds: [],
       notes: data.notes,
@@ -147,11 +135,7 @@ export class MockCaseRepository implements ICaseRepository {
       ...this.cases[idx],
       lawyer: {
         id: raw.id,
-        userId: raw.userId,
         fullName: raw.user.name,
-        cab: raw.cab,
-        specialties: raw.specialties,
-        phone: raw.phone,
       },
       updatedAt: new Date(),
     };

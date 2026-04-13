@@ -7,7 +7,7 @@ import type {
 } from "../../domain/repositories/ICaseRepository";
 import type { LegalCaseEntity, CaseStatus } from "../../domain/entities/legal-case.entity";
 
-// Tipo crudo retornado por la API
+// Tipo crudo retornado por la API (ya camelCase, relaciones aplanadas)
 interface CaseRaw {
   id: string;
   title: string;
@@ -15,34 +15,19 @@ interface CaseRaw {
   status: CaseStatus;
   priority: LegalCaseEntity["priority"];
   doctorId: string;
-  doctor: {
-    id: string;
-    userId: string;
-    user: { name: string };
-    cmp: string;
-    specialty: string;
-    hospital: string;
-  };
+  doctor?: { id: string; fullName: string; email?: string };
   lawyerId?: string;
-  lawyer?: {
-    id: string;
-    userId: string;
-    user: { name: string };
-    cab: string;
-    specialties: string[];
-    phone: string;
-  };
+  lawyer?: { id: string; fullName: string; email?: string };
   patientId?: string;
   patient?: {
     id: string;
+    fullName: string;
     dni: string;
-    name: string;
-    lastName: string;
     bloodType?: string;
     phone?: string;
     gender?: "M" | "F" | "other";
   };
-  documents: string[];
+  episodeId?: string;
   notes?: string;
   createdAt: string;
   updatedAt: string;
@@ -56,35 +41,11 @@ function toEntity(raw: CaseRaw): LegalCaseEntity {
     status: raw.status,
     priority: raw.priority,
     doctorId: raw.doctorId,
-    doctor: {
-      id: raw.doctor.id,
-      userId: raw.doctor.userId,
-      fullName: raw.doctor.user.name,
-      cmp: raw.doctor.cmp,
-      specialty: raw.doctor.specialty,
-      hospital: raw.doctor.hospital,
-    },
-    lawyer: raw.lawyer
-      ? {
-          id: raw.lawyer.id,
-          userId: raw.lawyer.userId,
-          fullName: raw.lawyer.user.name,
-          cab: raw.lawyer.cab,
-          specialties: raw.lawyer.specialties,
-          phone: raw.lawyer.phone,
-        }
-      : undefined,
-    patient: raw.patient
-      ? {
-          id: raw.patient.id,
-          dni: raw.patient.dni,
-          fullName: `${raw.patient.name} ${raw.patient.lastName}`,
-          bloodType: raw.patient.bloodType,
-          phone: raw.patient.phone,
-          gender: raw.patient.gender,
-        }
-      : undefined,
-    documentIds: raw.documents ?? [],
+    doctor: raw.doctor ?? { id: raw.doctorId, fullName: "Médico" },
+    lawyer: raw.lawyer,
+    patient: raw.patient,
+    episodeId: raw.episodeId,
+    documentIds: [],
     notes: raw.notes,
     createdAt: new Date(raw.createdAt),
     updatedAt: new Date(raw.updatedAt),
