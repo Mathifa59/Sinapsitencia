@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -46,6 +47,7 @@ interface UserFormModalProps {
 
 export function UserFormModal({ open, onClose }: UserFormModalProps) {
   const { mutateAsync: createUser, isPending } = useCreateUser();
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -66,6 +68,7 @@ export function UserFormModal({ open, onClose }: UserFormModalProps) {
   const selectedRole = watch("role");
 
   const onSubmit = async (formValues: UserFormValues) => {
+    setServerError(null);
     try {
       await createUser({
         name: formValues.name,
@@ -74,13 +77,14 @@ export function UserFormModal({ open, onClose }: UserFormModalProps) {
       });
       reset();
       onClose();
-    } catch {
-      // Los errores del repositorio se mostrarán en consola en modo demo
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : "Error al crear el usuario");
     }
   };
 
   const handleClose = () => {
     reset();
+    setServerError(null);
     onClose();
   };
 
@@ -142,6 +146,12 @@ export function UserFormModal({ open, onClose }: UserFormModalProps) {
               <p className="text-xs text-red-500">{errors.role.message}</p>
             )}
           </div>
+
+          {serverError && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+              {serverError}
+            </p>
+          )}
 
           <p className="text-xs text-slate-400">
             Se generará una contraseña temporal y se enviará al correo del usuario.

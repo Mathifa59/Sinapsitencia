@@ -1,26 +1,59 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import { Shield, CheckCircle2 } from "lucide-react";
 import { registerSchema, type RegisterFormValues } from "@/validators/auth";
+import { apiFetch } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function RegisterPage() {
-  const router = useRouter();
+  const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: { role: "doctor" },
   });
 
-  const onSubmit = async (_data: RegisterFormValues) => {
-    await new Promise((r) => setTimeout(r, 800));
-    router.push("/login");
+  const onSubmit = async (data: RegisterFormValues) => {
+    setServerError(null);
+    try {
+      await apiFetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify({ name: data.name, email: data.email, role: data.role }),
+      });
+      setSubmitted(true);
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : "Error al enviar la solicitud");
+    }
   };
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-sm text-center">
+          <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-emerald-100 mb-5">
+            <CheckCircle2 className="h-7 w-7 text-emerald-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Solicitud enviada</h1>
+          <p className="text-sm text-slate-500 mb-6">
+            Tu solicitud de acceso fue recibida correctamente. Recibirás un correo electrónico cuando tu cuenta sea activada por un administrador.
+          </p>
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition-colors"
+          >
+            Volver al inicio de sesión
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -63,6 +96,13 @@ export default function RegisterPage() {
               <Input type="password" placeholder="Repite la contraseña" {...register("confirmPassword")} />
               {errors.confirmPassword && <p className="text-xs text-red-600">{errors.confirmPassword.message}</p>}
             </div>
+
+            {serverError && (
+              <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+                {serverError}
+              </p>
+            )}
+
             <Button type="submit" className="w-full" variant="primary" disabled={isSubmitting}>
               {isSubmitting ? "Enviando solicitud..." : "Solicitar acceso"}
             </Button>

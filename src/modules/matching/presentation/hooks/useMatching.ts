@@ -51,6 +51,17 @@ export function useContactRequestsForLawyer(lawyerId: string) {
   });
 }
 
+export function useContactRequestsByDoctor(doctorId: string) {
+  return useQuery({
+    queryKey: queryKeys.matching.contactRequestsByDoctor(doctorId),
+    queryFn: async () => {
+      const { matchingRepository } = await import("@/infrastructure/di/container");
+      return matchingRepository.getContactRequestsByDoctor(doctorId);
+    },
+    enabled: Boolean(doctorId),
+  });
+}
+
 export function useSendContactRequest() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -61,6 +72,9 @@ export function useSendContactRequest() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.matching.contactRequests(variables.fromDoctorId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.matching.contactRequestsByDoctor(variables.fromDoctorId),
       });
     },
   });
