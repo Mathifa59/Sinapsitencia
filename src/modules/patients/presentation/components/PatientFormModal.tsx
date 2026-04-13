@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -63,6 +63,7 @@ export function PatientFormModal({ open, onClose, patient }: PatientFormModalPro
   const { mutateAsync: createPatient, isPending: isCreating } = useCreatePatient();
   const { mutateAsync: updatePatient, isPending: isUpdating } = useUpdatePatient();
   const isPending = isCreating || isUpdating;
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -123,6 +124,7 @@ export function PatientFormModal({ open, onClose, patient }: PatientFormModalPro
   }, [patient, open, reset]);
 
   const onSubmit = async (formValues: PatientFormValues) => {
+    setServerError(null);
     try {
       if (isEditMode && patient) {
         const updateInput: UpdatePatientInput = {
@@ -149,13 +151,13 @@ export function PatientFormModal({ open, onClose, patient }: PatientFormModalPro
         await createPatient(createInput);
       }
       onClose();
-    } catch {
-      // Los errores del repositorio se mostrarán en consola en modo demo
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : "Error al guardar el paciente");
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) { setServerError(null); onClose(); } }}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -287,11 +289,17 @@ export function PatientFormModal({ open, onClose, patient }: PatientFormModalPro
             </div>
           </div>
 
+          {serverError && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+              {serverError}
+            </p>
+          )}
+
           <DialogFooter>
             <Button
               type="button"
               variant="outline"
-              onClick={onClose}
+              onClick={() => { setServerError(null); onClose(); }}
               disabled={isPending}
             >
               Cancelar

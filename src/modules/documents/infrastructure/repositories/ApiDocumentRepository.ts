@@ -74,11 +74,12 @@ function toEntity(raw: DocumentRaw): DocumentEntity {
   };
 }
 
-function buildParams(filters?: DocumentFilters): string {
+function buildParams(filters?: DocumentFilters & { authorId?: string }): string {
   const p = new URLSearchParams();
   if (filters?.status) p.set("status", filters.status);
   if (filters?.type) p.set("type", filters.type);
   if (filters?.patientId) p.set("patientId", filters.patientId);
+  if ((filters as Record<string, string>)?.authorId) p.set("authorId", (filters as Record<string, string>).authorId);
   if (filters?.search) p.set("search", filters.search);
   if (filters?.page) p.set("page", String(filters.page));
   if (filters?.pageSize) p.set("pageSize", String(filters.pageSize));
