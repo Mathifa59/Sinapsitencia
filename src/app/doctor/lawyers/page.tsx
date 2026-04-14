@@ -80,7 +80,7 @@ export default function DoctorLawyersPage() {
           const matchReasons = getMatchReasons(lawyer.id);
           const alreadyRequested = hasActiveRequest(lawyer.id);
 
-          const isHighMatch = matchScore !== undefined && matchScore >= 90;
+          const isHighMatch = matchScore !== undefined && matchScore >= 80;
 
           return (
             <div key={lawyer.id} className={`bg-white rounded-lg border p-5 space-y-4 ${isHighMatch ? "border-amber-300 ring-1 ring-amber-200 bg-amber-50/30" : "border-slate-200"}`}>

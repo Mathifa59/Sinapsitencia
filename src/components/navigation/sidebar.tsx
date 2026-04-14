@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Briefcase, FileText, Scale, User,
   Bell, Stethoscope, Users, Heart, Activity,
-  FolderOpen, ShieldCheck, X, ChevronRight
+  FolderOpen, ShieldCheck, AlertTriangle, X, ChevronRight
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useUIStore } from "@/store/ui.store";
@@ -22,7 +22,7 @@ import type { UserRole } from "@/types";
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, Briefcase, FileText, Scale, User,
   Bell, Stethoscope, Users, Heart, Activity,
-  FolderOpen, ShieldCheck,
+  FolderOpen, ShieldCheck, AlertTriangle,
 };
 
 const NAV_ITEMS: Record<UserRole, NavigationItem[]> = {
