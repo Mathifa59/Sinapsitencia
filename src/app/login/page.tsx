@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Shield, Eye, EyeOff } from "lucide-react";
+import { Shield, Eye, EyeOff, Zap } from "lucide-react";
 import { useState, Suspense } from "react";
 import { loginSchema, type LoginFormValues } from "@/validators/auth";
 import { useAuthStore } from "@/store/auth.store";
@@ -12,6 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { UserRole } from "@/types";
+
+const DEMO_ROLES: { role: UserRole; label: string; color: string }[] = [
+  { role: "doctor",  label: "Médico",        color: "bg-blue-600 hover:bg-blue-700 text-white" },
+  { role: "lawyer",  label: "Abogado",        color: "bg-emerald-600 hover:bg-emerald-700 text-white" },
+  { role: "admin",   label: "Administrador",  color: "bg-slate-700 hover:bg-slate-800 text-white" },
+];
 
 const ROLE_DASHBOARD: Record<UserRole, string> = {
   doctor: "/doctor/dashboard",
@@ -23,9 +29,10 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect");
-  const { login, isLoading } = useAuthStore();
+  const { login, loginByRole, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [demoLoading, setDemoLoading] = useState<UserRole | null>(null);
 
   const {
     register,
@@ -51,6 +58,20 @@ function LoginForm() {
       if (user) redirectAfterLogin(user.role);
     } catch {
       setError("Credenciales incorrectas. Verifica tu correo y contraseña.");
+    }
+  };
+
+  const handleDemoLogin = async (role: UserRole) => {
+    setError(null);
+    setDemoLoading(role);
+    try {
+      await loginByRole(role);
+      const { user } = useAuthStore.getState();
+      if (user) redirectAfterLogin(user.role);
+    } catch {
+      setError(`No se pudo ingresar como ${role} demo. Verifica que la cuenta exista.`);
+    } finally {
+      setDemoLoading(null);
     }
   };
 
@@ -95,6 +116,30 @@ function LoginForm() {
         ¿No tienes cuenta?{" "}
         <Link href="/register" className="text-blue-600 hover:underline font-medium">Crear cuenta</Link>
       </p>
+
+      {/* Acceso rápido demo */}
+      <div className="mt-6">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex-1 h-px bg-slate-200" />
+          <span className="flex items-center gap-1 text-xs text-slate-400 font-medium">
+            <Zap className="h-3 w-3" />
+            Acceso rápido (demo)
+          </span>
+          <div className="flex-1 h-px bg-slate-200" />
+        </div>
+        <div className="flex gap-2">
+          {DEMO_ROLES.map(({ role, label, color }) => (
+            <button
+              key={role}
+              onClick={() => handleDemoLogin(role)}
+              disabled={isLoading || demoLoading !== null}
+              className={`flex-1 py-2 px-2 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${color}`}
+            >
+              {demoLoading === role ? "..." : label}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

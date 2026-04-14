@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Briefcase, FileText, Scale, User,
   Bell, Stethoscope, Users, Heart, Activity,
-  FolderOpen, ShieldCheck, X, ChevronRight, ArrowRightLeft
+  FolderOpen, ShieldCheck, X, ChevronRight
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useUIStore } from "@/store/ui.store";
@@ -15,7 +15,6 @@ import {
   NAVIGATION_LAWYER,
   NAVIGATION_ADMIN,
   ROLE_PORTAL_LABELS,
-  ROLE_LABELS,
 } from "@/constants";
 import type { NavigationItem } from "@/constants";
 import type { UserRole } from "@/types";
@@ -32,30 +31,15 @@ const NAV_ITEMS: Record<UserRole, NavigationItem[]> = {
   admin: NAVIGATION_ADMIN,
 };
 
-const ALL_ROLES: UserRole[] = ["doctor", "lawyer", "admin"];
-
-const ROLE_DASHBOARD: Record<UserRole, string> = {
-  doctor: "/doctor/dashboard",
-  lawyer: "/lawyer/dashboard",
-  admin: "/admin/dashboard",
-};
-
 export function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const { sidebarOpen, setSidebarOpen } = useUIStore();
-  const { user, loginByRole } = useAuthStore();
+  const { user } = useAuthStore();
 
   if (!user) return null;
 
   const role = user.role as UserRole;
   const navItems = NAV_ITEMS[role] ?? [];
-
-  const switchRole = async (newRole: UserRole) => {
-    if (newRole === role) return;
-    await loginByRole(newRole);
-    router.push(ROLE_DASHBOARD[newRole]);
-  };
 
   return (
     <>
@@ -112,30 +96,6 @@ export function Sidebar() {
             );
           })}
         </nav>
-
-        {/* Role switcher (dev/testing) */}
-        <div className="border-t border-slate-700 px-4 py-3">
-          <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-slate-500 mb-2">
-            <ArrowRightLeft className="h-3 w-3" />
-            Cambiar rol (demo)
-          </p>
-          <div className="flex gap-1.5">
-            {ALL_ROLES.map((r) => (
-              <button
-                key={r}
-                onClick={() => switchRole(r)}
-                className={cn(
-                  "flex-1 text-[11px] font-medium py-1.5 rounded transition-colors",
-                  r === role
-                    ? "bg-blue-600 text-white"
-                    : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"
-                )}
-              >
-                {ROLE_LABELS[r]}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* User info */}
         <div className="border-t border-slate-700 px-4 py-4">
