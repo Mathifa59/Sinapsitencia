@@ -24,6 +24,8 @@ export class MockUserRepository implements IUserRepository {
 
   async create(input: CreateUserInput): Promise<UserEntity> {
     await new Promise((r) => setTimeout(r, 350));
+    const exists = this.users.some((u) => u.email === input.email);
+    if (exists) throw new Error("Ya existe un usuario con ese correo electrónico");
     const newUser: UserEntity = {
       id: `u${Date.now()}`,
       name: input.name,

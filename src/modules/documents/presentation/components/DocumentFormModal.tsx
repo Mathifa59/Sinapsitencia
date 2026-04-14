@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -74,6 +75,7 @@ export function DocumentFormModal({ open, onClose }: DocumentFormModalProps) {
   const { mutateAsync: createDocument, isPending } = useCreateDocument();
   const { data: paginatedPatients } = usePatients({ pageSize: 100 });
   const patients = paginatedPatients?.data ?? [];
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -97,6 +99,7 @@ export function DocumentFormModal({ open, onClose }: DocumentFormModalProps) {
 
   const onSubmit = async (formValues: DocumentFormValues) => {
     if (!user) return;
+    setServerError(null);
     const selectedPatient = patients.find((p) => p.id === formValues.patientId);
     try {
       await createDocument({
@@ -110,13 +113,14 @@ export function DocumentFormModal({ open, onClose }: DocumentFormModalProps) {
       });
       reset();
       onClose();
-    } catch {
-      // Errores visibles en consola en modo demo
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : "Error al crear el documento");
     }
   };
 
   const handleClose = () => {
     reset();
+    setServerError(null);
     onClose();
   };
 
@@ -197,6 +201,12 @@ export function DocumentFormModal({ open, onClose }: DocumentFormModalProps) {
               {...register("initialContent")}
             />
           </div>
+
+          {serverError && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+              {serverError}
+            </p>
+          )}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>

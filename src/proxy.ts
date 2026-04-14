@@ -4,12 +4,14 @@
  * Reemplaza a middleware.ts en Next.js 16.
  * Se ejecuta antes de cada request para:
  *
- * 1. Refrescar la sesión de Supabase (si el JWT expiró)
+ * 1. Refrescar la sesión de Supabase (si está configurado)
  * 2. Verificar autenticación por rol
  * 3. Proteger rutas según el rol del usuario
+ *
+ * Si las variables de Supabase no están configuradas,
+ * funciona en modo demo usando solo la cookie de rol.
  */
 
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -34,71 +36,80 @@ function isValidRole(value: string): value is Role {
   return VALID_ROLES.includes(value as Role);
 }
 
+const AUTH_COOKIE = "sinapsistencia-role";
+
+/** Detecta si Supabase está configurado */
+const hasSupabase =
+  !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ── 1. Refrescar sesión de Supabase ──────────────────────────────
-  let supabaseResponse = NextResponse.next({ request });
+  // ── 1. Preparar response base ──────────────────────────────────────
+  let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
+  // Si Supabase está configurado, refrescar sesión
+  if (hasSupabase) {
+    try {
+      const { createServerClient } = await import("@supabase/ssr");
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            getAll() {
+              return request.cookies.getAll();
+            },
+            setAll(cookiesToSet) {
+              cookiesToSet.forEach(({ name, value }) =>
+                request.cookies.set(name, value)
+              );
+              response = NextResponse.next({ request });
+              cookiesToSet.forEach(({ name, value, options }) =>
+                response.cookies.set(name, value, options)
+              );
+            },
+          },
+        }
+      );
+      // Refrescar sesión si el token expiró
+      await supabase.auth.getUser();
+    } catch {
+      // Supabase no disponible — continuar con cookie de rol
     }
-  );
-
-  // Refrescar sesión si el token expiró (IMPORTANTE: siempre usar getUser)
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  }
 
   // ── 2. Rutas de API — pasar sin protección de rol ────────────────
   if (pathname.startsWith("/api")) {
-    return supabaseResponse;
+    return response;
   }
 
   // ── 3. Rutas públicas — pasar siempre ────────────────────────────
   if (PUBLIC_PATHS.includes(pathname)) {
     // Si está autenticado y visita /login, redirigir a su dashboard
-    if (pathname === "/login" && user) {
-      // Obtener rol de la cookie o del perfil
-      const roleCookie = request.cookies.get("sinapsistencia-role")?.value;
+    if (pathname === "/login") {
+      const roleCookie = request.cookies.get(AUTH_COOKIE)?.value;
       if (roleCookie && isValidRole(roleCookie)) {
-        const redirectUrl = new URL(ROLE_DASHBOARD[roleCookie], request.url);
-        const redirect = NextResponse.redirect(redirectUrl);
-        // Copiar cookies de Supabase al redirect
-        supabaseResponse.cookies.getAll().forEach((cookie) => {
+        const redirect = NextResponse.redirect(
+          new URL(ROLE_DASHBOARD[roleCookie], request.url)
+        );
+        response.cookies.getAll().forEach((cookie) => {
           redirect.cookies.set(cookie.name, cookie.value);
         });
         return redirect;
       }
     }
-    return supabaseResponse;
+    return response;
   }
 
   // ── 4. Verificar autenticación ───────────────────────────────────
-  const role = request.cookies.get("sinapsistencia-role")?.value;
+  const role = request.cookies.get(AUTH_COOKIE)?.value;
   if (!role || !isValidRole(role)) {
-    // No autenticado → login
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     const redirect = NextResponse.redirect(loginUrl);
-    // Copiar cookies de Supabase al redirect
-    supabaseResponse.cookies.getAll().forEach((cookie) => {
+    response.cookies.getAll().forEach((cookie) => {
       redirect.cookies.set(cookie.name, cookie.value);
     });
     return redirect;
@@ -108,29 +119,24 @@ export async function proxy(request: NextRequest) {
   for (const prefix of ROLE_PREFIXES) {
     if (pathname.startsWith(`/${prefix}`)) {
       if (role !== prefix) {
-        // Rol incorrecto → redirigir a su propio dashboard
-        const redirectUrl = new URL(ROLE_DASHBOARD[role], request.url);
-        const redirect = NextResponse.redirect(redirectUrl);
-        supabaseResponse.cookies.getAll().forEach((cookie) => {
+        const redirect = NextResponse.redirect(
+          new URL(ROLE_DASHBOARD[role], request.url)
+        );
+        response.cookies.getAll().forEach((cookie) => {
           redirect.cookies.set(cookie.name, cookie.value);
         });
         return redirect;
       }
-      return supabaseResponse;
+      return response;
     }
   }
 
   // ── 6. Cualquier otra ruta protegida — pasar ─────────────────────
-  return supabaseResponse;
+  return response;
 }
 
 export const config = {
   matcher: [
-    /*
-     * Proteger todas las rutas excepto:
-     * - _next/static, _next/image (assets del framework)
-     * - favicon.ico, archivos estáticos
-     */
     "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

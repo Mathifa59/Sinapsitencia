@@ -6,6 +6,7 @@ import {
   useMatchRecommendations,
   useLawyerProfiles,
   useSendContactRequest,
+  useContactRequestsByDoctor,
 } from "@/modules/matching/presentation/hooks/useMatching";
 import { useAuthStore } from "@/store/auth.store";
 import { Badge } from "@/components/ui/badge";
@@ -20,8 +21,8 @@ export default function DoctorLawyersPage() {
 
   const { data: lawyerProfiles = [], isLoading } = useLawyerProfiles();
   const { data: matchRecommendations = [] } = useMatchRecommendations(user?.id ?? "");
+  const { data: existingRequests = [] } = useContactRequestsByDoctor(user?.id ?? "");
   const { mutate: sendContactRequest, isPending: isSending } = useSendContactRequest();
-  const [requestedLawyerIds, setRequestedLawyerIds] = useState<Set<string>>(new Set());
 
   const filteredLawyers = lawyerProfiles.filter(
     (lawyer) =>
@@ -35,18 +36,18 @@ export default function DoctorLawyersPage() {
   const getMatchReasons = (lawyerId: string) =>
     matchRecommendations.find((rec) => rec.lawyer.id === lawyerId)?.reasons ?? [];
 
+  const hasActiveRequest = (lawyerId: string) =>
+    existingRequests.some(
+      (r) => r.toLawyerId === lawyerId && (r.status === "pendiente" || r.status === "aceptado")
+    );
+
   const handleSendContactRequest = (lawyer: LawyerProfileEntity) => {
     if (!user) return;
-    sendContactRequest(
-      {
-        fromDoctorId: user.id,
-        toLawyerId: lawyer.id,
-        message: `Hola ${lawyer.fullName}, me gustaría contactarle para revisar un caso.`,
-      },
-      {
-        onSuccess: () => setRequestedLawyerIds((prev) => new Set([...prev, lawyer.id])),
-      }
-    );
+    sendContactRequest({
+      fromDoctorId: user.id,
+      toLawyerId: lawyer.id,
+      message: `Hola ${lawyer.fullName}, me gustaría contactarle para revisar un caso.`,
+    });
   };
 
   return (
@@ -77,10 +78,12 @@ export default function DoctorLawyersPage() {
         {filteredLawyers.map((lawyer) => {
           const matchScore = getMatchScore(lawyer.id);
           const matchReasons = getMatchReasons(lawyer.id);
-          const alreadyRequested = requestedLawyerIds.has(lawyer.id);
+          const alreadyRequested = hasActiveRequest(lawyer.id);
+
+          const isHighMatch = matchScore !== undefined && matchScore >= 90;
 
           return (
-            <div key={lawyer.id} className="bg-white rounded-lg border border-slate-200 p-5 space-y-4">
+            <div key={lawyer.id} className={`bg-white rounded-lg border p-5 space-y-4 ${isHighMatch ? "border-amber-300 ring-1 ring-amber-200 bg-amber-50/30" : "border-slate-200"}`}>
               <div className="flex items-start gap-4">
                 <div className="h-12 w-12 rounded-full bg-slate-900 flex items-center justify-center shrink-0 text-white font-bold text-sm">
                   {getInitials(lawyer.fullName)}
@@ -91,8 +94,9 @@ export default function DoctorLawyersPage() {
                       <p className="font-semibold text-slate-900">{lawyer.fullName}</p>
                       <p className="text-xs text-slate-500">CAB: {lawyer.cab}</p>
                     </div>
-                    {matchScore && (
-                      <div className="flex items-center gap-1 bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full border border-blue-100 shrink-0">
+                    {matchScore !== undefined && (
+                      <div className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full shrink-0 ${isHighMatch ? "bg-amber-100 text-amber-800 border border-amber-300" : "bg-blue-50 text-blue-700 border border-blue-100"}`}>
+                        {isHighMatch && <Star className="h-3 w-3 text-amber-500 fill-amber-500" />}
                         <Scale className="h-3 w-3" />
                         {matchScore}% match
                       </div>

@@ -13,12 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { UserRole } from "@/types";
 
-const ROLE_SHORTCUTS: { role: UserRole; label: string; email: string }[] = [
-  { role: "doctor", label: "Médico demo", email: "dr.ramirez@hospital.pe" },
-  { role: "lawyer", label: "Abogado demo", email: "abg.vasquez@legal.pe" },
-  { role: "admin", label: "Admin demo", email: "admin@hngai.pe" },
-];
-
 const ROLE_DASHBOARD: Record<UserRole, string> = {
   doctor: "/doctor/dashboard",
   lawyer: "/lawyer/dashboard",
@@ -29,7 +23,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect");
-  const { login, loginByRole, isLoading } = useAuthStore();
+  const { login, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +35,6 @@ function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  /** Redirige al destino original o al dashboard del rol */
   const redirectAfterLogin = (role: UserRole) => {
     if (redirectTo && redirectTo.startsWith(`/${role}`)) {
       router.push(redirectTo);
@@ -59,11 +52,6 @@ function LoginForm() {
     } catch {
       setError("Credenciales incorrectas. Verifica tu correo y contraseña.");
     }
-  };
-
-  const loginAs = async (role: UserRole) => {
-    await loginByRole(role);
-    redirectAfterLogin(role);
   };
 
   return (
@@ -101,27 +89,11 @@ function LoginForm() {
             {isLoading ? "Ingresando..." : "Ingresar"}
           </Button>
         </form>
-
-        <div className="mt-5">
-          <div className="relative flex items-center gap-3 my-4">
-            <div className="flex-1 h-px bg-slate-100" />
-            <span className="text-xs text-slate-400">Acceso rápido demo</span>
-            <div className="flex-1 h-px bg-slate-100" />
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            {ROLE_SHORTCUTS.map((s) => (
-              <button key={s.role} type="button" onClick={() => loginAs(s.role)}
-                className="text-xs font-medium text-slate-600 border border-slate-200 rounded-md py-2 hover:bg-slate-50 hover:border-slate-300 transition-colors">
-                {s.label}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       <p className="text-center text-sm text-slate-500 mt-5">
-        ¿Sin cuenta?{" "}
-        <Link href="/register" className="text-blue-600 hover:underline font-medium">Solicitar acceso</Link>
+        ¿No tienes cuenta?{" "}
+        <Link href="/register" className="text-blue-600 hover:underline font-medium">Crear cuenta</Link>
       </p>
     </div>
   );

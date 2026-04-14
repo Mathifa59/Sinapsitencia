@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -42,6 +43,7 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
   const { mutateAsync: createCase, isPending } = useCreateCase(user?.id ?? "");
   const { data: paginatedPatients } = usePatients({ pageSize: 100 });
   const patients = paginatedPatients?.data ?? [];
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -65,6 +67,7 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
   const selectedPatientId = watch("patientId");
 
   const onSubmit = async (formValues: CaseFormValues) => {
+    setServerError(null);
     try {
       await createCase({
         title: formValues.title,
@@ -76,13 +79,14 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
       });
       reset();
       onClose();
-    } catch {
-      // Los errores del repositorio se mostrarán en consola en modo demo
+    } catch (e) {
+      setServerError(e instanceof Error ? e.message : "Error al crear el caso");
     }
   };
 
   const handleClose = () => {
     reset();
+    setServerError(null);
     onClose();
   };
 
@@ -176,6 +180,12 @@ export function CaseFormModal({ open, onClose }: CaseFormModalProps) {
               {...register("notes")}
             />
           </div>
+
+          {serverError && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+              {serverError}
+            </p>
+          )}
 
           <DialogFooter>
             <Button

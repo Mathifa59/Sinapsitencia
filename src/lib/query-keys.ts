@@ -23,6 +23,8 @@ export const queryKeys = {
       ["matching", "recommendations", doctorId] as const,
     contactRequests: (userId: string) =>
       ["matching", "requests", userId] as const,
+    contactRequestsByDoctor: (doctorId: string) =>
+      ["matching", "requests", "doctor", doctorId] as const,
   },
   audit: {
     logs: (filters: object) => ["audit", "logs", filters] as const,
