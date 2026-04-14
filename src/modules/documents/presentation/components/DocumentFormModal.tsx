@@ -173,14 +173,14 @@ export function DocumentFormModal({ open, onClose }: DocumentFormModalProps) {
             <div className="space-y-1.5">
               <Label>Paciente asociado</Label>
               <Select
-                value={selectedPatientId ?? ""}
-                onValueChange={(val) => setValue("patientId", val || undefined)}
+                value={selectedPatientId || "__none__"}
+                onValueChange={(val) => setValue("patientId", val === "__none__" ? "" : val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Sin paciente" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Sin paciente</SelectItem>
+                  <SelectItem value="__none__">Sin paciente</SelectItem>
                   {patients.map((patient) => (
                     <SelectItem key={patient.id} value={patient.id}>
                       {patient.fullName}
