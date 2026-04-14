@@ -53,7 +53,7 @@ async function getRecommendations(supabase: any, doctorId: string) {
     return apiError("Perfil de médico no encontrado", 404);
   }
 
-  // Obtener todos los abogados para el ML
+  // Obtener todos los abogados para enriquecimiento
   const { data: lawyers } = await supabase
     .from("lawyer_profiles")
     .select(
@@ -64,17 +64,18 @@ async function getRecommendations(supabase: any, doctorId: string) {
     );
 
   try {
-    // Llamar al ML service
+    // Llamar al ML service con el formato que ahora acepta (doctor_id + doctor_profile)
     const mlResponse = await fetch(`${mlUrl}/api/v1/recommendations`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         doctor_id: doctorId,
         doctor_profile: {
+          name: doctorProfile.user?.name ?? "",
           specialty: doctorProfile.specialty,
-          sub_specialties: doctorProfile.sub_specialties,
-          hospital: doctorProfile.hospital,
-          years_experience: doctorProfile.years_experience,
+          sub_specialties: doctorProfile.sub_specialties ?? [],
+          hospital: doctorProfile.hospital ?? "",
+          years_experience: doctorProfile.years_experience ?? 0,
         },
         top_k: 10,
       }),
@@ -88,6 +89,7 @@ async function getRecommendations(supabase: any, doctorId: string) {
       const recommendations = mlData.recommendations
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .map((rec: any) => {
+          // Buscar el abogado por user_id (UUID real de Supabase)
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const lawyer = (lawyers ?? []).find((l: any) => l.user_id === rec.lawyer_id);
           if (!lawyer) return null;
@@ -97,6 +99,11 @@ async function getRecommendations(supabase: any, doctorId: string) {
             doctorId,
             lawyer: toLawyerResponse(lawyer),
             score: Math.round(rec.score * 100),
+            contentScore: Math.round((rec.content_score ?? 0) * 100),
+            collaborativeScore: Math.round((rec.collaborative_score ?? 0) * 100),
+            matchedSpecialties: rec.matched_specialties ?? [],
+            modelUsed: rec.model_used ?? "unknown",
+            featureImportance: rec.feature_importance ?? [],
             reasons: rec.reasons ?? [],
             createdAt: new Date().toISOString(),
           };
@@ -104,7 +111,10 @@ async function getRecommendations(supabase: any, doctorId: string) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((r: any) => r !== null);
 
-      return apiSuccess(recommendations);
+      return apiSuccess({
+        recommendations,
+        modelInfo: mlData.model_info ?? {},
+      });
     }
   } catch {
     // ML service no disponible — fallback a matching por especialidad
@@ -129,11 +139,19 @@ async function getRecommendations(supabase: any, doctorId: string) {
       doctorId,
       lawyer: toLawyerResponse(l),
       score: 70 + Math.floor(Math.random() * 20), // Score estimado sin ML
+      contentScore: 0,
+      collaborativeScore: 0,
+      matchedSpecialties: [],
+      modelUsed: "fallback",
+      featureImportance: [],
       reasons: ["Coincidencia por área médica (sin ML service)"],
       createdAt: new Date().toISOString(),
     }));
 
-  return apiSuccess(recommendations);
+  return apiSuccess({
+    recommendations,
+    modelInfo: { model: "fallback", message: "ML service no disponible" },
+  });
 }
 
 // ─── Helper: transformar perfil de abogado ──────────────────────────────────
