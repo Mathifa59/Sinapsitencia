@@ -45,4 +45,7 @@ export const queryKeys = {
   episodes: {
     all: ["episodes"] as const,
   },
+  profile: {
+    detail: (userId: string) => ["profile", userId] as const,
+  },
 } as const;

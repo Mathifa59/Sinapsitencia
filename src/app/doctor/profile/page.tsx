@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,25 +8,28 @@ import {
   Save,
   Stethoscope,
   Loader2,
-  Camera,
-  CheckCircle,
-  Mail,
   Phone,
   Building2,
   Award,
   Calendar,
 } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/auth.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { apiFetch } from "@/lib/api";
-import { getInitials } from "@/lib/utils";
+import { queryKeys } from "@/lib/query-keys";
 import { MEDICAL_SPECIALTIES } from "@/constants";
+import {
+  ProfileHeader,
+  SaveFeedback,
+  useProfile,
+  useAvatarUpload,
+} from "@/components/profile";
+import type { DoctorProfessional } from "@/components/profile";
 
 const doctorProfileSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
@@ -39,41 +42,12 @@ const doctorProfileSchema = z.object({
 });
 type DoctorProfileForm = z.infer<typeof doctorProfileSchema>;
 
-interface ProfileResponse {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  avatar: string | null;
-  isActive: boolean;
-  createdAt: string;
-  professional: {
-    id: string;
-    user_id: string;
-    cmp: string;
-    specialty: string;
-    hospital: string;
-    phone: string;
-    bio: string | null;
-    years_experience: number;
-  } | null;
-}
-
-function useProfile(userId: string) {
-  return useQuery({
-    queryKey: ["profile", userId],
-    queryFn: () => apiFetch<ProfileResponse>(`/api/profile?userId=${userId}`),
-    enabled: Boolean(userId),
-  });
-}
-
 export default function DoctorProfilePage() {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
-  const { data: profile, isLoading } = useProfile(user?.id ?? "");
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const userId = user?.id ?? "";
+  const { data: profile, isLoading } = useProfile<DoctorProfessional>(userId);
+  const avatar = useAvatarUpload(user?.id);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -117,35 +91,11 @@ export default function DoctorProfilePage() {
           },
         }),
       });
-      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail(userId) });
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch {
       setSaveError("Error al guardar los cambios. Intenta de nuevo.");
-    }
-  };
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user?.id) return;
-
-    setAvatarPreview(URL.createObjectURL(file));
-    setUploadingAvatar(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("userId", user.id);
-
-      const res = await fetch("/api/profile/avatar", { method: "POST", body: formData });
-      const json = await res.json();
-      if (!json.success) throw new Error(json.error);
-
-      queryClient.invalidateQueries({ queryKey: ["profile", user.id] });
-    } catch {
-      setAvatarPreview(null);
-    } finally {
-      setUploadingAvatar(false);
     }
   };
 
@@ -166,7 +116,7 @@ export default function DoctorProfilePage() {
     );
   }
 
-  const displayAvatar = avatarPreview ?? profile?.avatar;
+  const displayAvatar = avatar.preview ?? profile?.avatar;
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -177,72 +127,37 @@ export default function DoctorProfilePage() {
         </p>
       </div>
 
-      {/* ─── Header card con avatar ─── */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="h-28 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500" />
-        <div className="px-6 pb-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 -mt-12">
-            {/* Avatar con upload */}
-            <div className="relative group">
-              <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
-                {displayAvatar && (
-                  <AvatarImage src={displayAvatar} alt={user?.name} />
-                )}
-                <AvatarFallback className="bg-blue-600 text-white text-2xl font-bold">
-                  {getInitials(user?.name ?? "")}
-                </AvatarFallback>
-              </Avatar>
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploadingAvatar}
-                className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-              >
-                {uploadingAvatar ? (
-                  <Loader2 className="h-5 w-5 text-white animate-spin" />
-                ) : (
-                  <Camera className="h-5 w-5 text-white" />
-                )}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleAvatarChange}
-                className="hidden"
-              />
-            </div>
-
-            <div className="flex-1 min-w-0 pb-1">
-              <h2 className="text-xl font-bold text-slate-900 truncate">
-                {user?.name}
-              </h2>
-              <div className="flex items-center gap-2 mt-1 text-sm text-slate-500">
-                <Mail className="h-3.5 w-3.5" />
-                {user?.email}
-              </div>
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                <Badge variant="info" className="gap-1">
-                  <Stethoscope className="h-3 w-3" />
-                  {prof.specialty}
-                </Badge>
-                {prof.years_experience > 0 && (
-                  <Badge variant="secondary" className="gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {prof.years_experience} años exp.
-                  </Badge>
-                )}
-                {prof.cmp && (
-                  <Badge variant="secondary" className="gap-1">
-                    <Award className="h-3 w-3" />
-                    CMP: {prof.cmp}
-                  </Badge>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ProfileHeader
+        name={user?.name ?? ""}
+        email={user?.email ?? ""}
+        avatarUrl={displayAvatar ?? null}
+        bannerGradient="from-blue-600 via-blue-500 to-cyan-500"
+        avatarFallbackClass="bg-blue-600"
+        fileInputRef={avatar.fileInputRef}
+        uploading={avatar.uploading}
+        onFileChange={avatar.handleChange}
+        onPickerOpen={avatar.openPicker}
+        badges={
+          <>
+            <Badge variant="info" className="gap-1">
+              <Stethoscope className="h-3 w-3" />
+              {prof.specialty}
+            </Badge>
+            {prof.years_experience > 0 && (
+              <Badge variant="secondary" className="gap-1">
+                <Calendar className="h-3 w-3" />
+                {prof.years_experience} años exp.
+              </Badge>
+            )}
+            {prof.cmp && (
+              <Badge variant="secondary" className="gap-1">
+                <Award className="h-3 w-3" />
+                CMP: {prof.cmp}
+              </Badge>
+            )}
+          </>
+        }
+      />
 
       {/* ─── Formulario ─── */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
@@ -329,18 +244,7 @@ export default function DoctorProfilePage() {
             />
           </div>
 
-          {saveError && (
-            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
-              {saveError}
-            </p>
-          )}
-
-          {saveSuccess && (
-            <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-md px-3 py-2">
-              <CheckCircle className="h-4 w-4" />
-              Perfil actualizado correctamente
-            </div>
-          )}
+          <SaveFeedback error={saveError} success={saveSuccess} />
 
           <div className="flex justify-end pt-2">
             <Button

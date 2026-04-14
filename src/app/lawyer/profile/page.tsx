@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,26 +9,29 @@ import {
   Scale,
   Star,
   Loader2,
-  Camera,
-  CheckCircle,
-  Mail,
   Phone,
   Award,
   Calendar,
   Briefcase,
   Stethoscope,
 } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/auth.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { apiFetch } from "@/lib/api";
-import { getInitials } from "@/lib/utils";
+import { queryKeys } from "@/lib/query-keys";
 import { LEGAL_SPECIALTIES, MEDICAL_SPECIALTIES } from "@/constants";
+import {
+  ProfileHeader,
+  SaveFeedback,
+  useProfile,
+  useAvatarUpload,
+} from "@/components/profile";
+import type { LawyerProfessional } from "@/components/profile";
 
 const lawyerProfileSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
@@ -39,43 +42,12 @@ const lawyerProfileSchema = z.object({
 });
 type LawyerProfileForm = z.infer<typeof lawyerProfileSchema>;
 
-interface ProfileResponse {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  avatar: string | null;
-  isActive: boolean;
-  createdAt: string;
-  professional: {
-    id: string;
-    user_id: string;
-    cab: string;
-    specialties: string[];
-    medical_areas: string[];
-    phone: string;
-    bio: string | null;
-    years_experience: number;
-    rating: number;
-    resolved_cases: number;
-  } | null;
-}
-
-function useProfile(userId: string) {
-  return useQuery({
-    queryKey: ["profile", userId],
-    queryFn: () => apiFetch<ProfileResponse>(`/api/profile?userId=${userId}`),
-    enabled: Boolean(userId),
-  });
-}
-
 export default function LawyerProfilePage() {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
-  const { data: profile, isLoading } = useProfile(user?.id ?? "");
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const userId = user?.id ?? "";
+  const { data: profile, isLoading } = useProfile<LawyerProfessional>(userId);
+  const avatar = useAvatarUpload(user?.id);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -122,7 +94,6 @@ export default function LawyerProfilePage() {
     );
   };
 
-  // Track if chips changed vs original
   const chipsChanged =
     chipsInitialized &&
     (JSON.stringify(selectedSpecialties) !== JSON.stringify(prof?.specialties ?? []) ||
@@ -149,35 +120,11 @@ export default function LawyerProfilePage() {
           },
         }),
       });
-      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail(userId) });
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch {
       setSaveError("Error al guardar los cambios. Intenta de nuevo.");
-    }
-  };
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user?.id) return;
-
-    setAvatarPreview(URL.createObjectURL(file));
-    setUploadingAvatar(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("userId", user.id);
-
-      const res = await fetch("/api/profile/avatar", { method: "POST", body: formData });
-      const json = await res.json();
-      if (!json.success) throw new Error(json.error);
-
-      queryClient.invalidateQueries({ queryKey: ["profile", user.id] });
-    } catch {
-      setAvatarPreview(null);
-    } finally {
-      setUploadingAvatar(false);
     }
   };
 
@@ -198,7 +145,7 @@ export default function LawyerProfilePage() {
     );
   }
 
-  const displayAvatar = avatarPreview ?? profile?.avatar;
+  const displayAvatar = avatar.preview ?? profile?.avatar;
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -209,84 +156,49 @@ export default function LawyerProfilePage() {
         </p>
       </div>
 
-      {/* ─── Header card con avatar ─── */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="h-28 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700" />
-        <div className="px-6 pb-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 -mt-12">
-            {/* Avatar con upload */}
-            <div className="relative group">
-              <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
-                {displayAvatar && (
-                  <AvatarImage src={displayAvatar} alt={user?.name} />
-                )}
-                <AvatarFallback className="bg-slate-800 text-white text-2xl font-bold">
-                  {getInitials(user?.name ?? "")}
-                </AvatarFallback>
-              </Avatar>
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploadingAvatar}
-                className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-              >
-                {uploadingAvatar ? (
-                  <Loader2 className="h-5 w-5 text-white animate-spin" />
-                ) : (
-                  <Camera className="h-5 w-5 text-white" />
-                )}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleAvatarChange}
-                className="hidden"
-              />
-            </div>
-
-            <div className="flex-1 min-w-0 pb-1">
-              <h2 className="text-xl font-bold text-slate-900 truncate">
-                {user?.name}
-              </h2>
-              <div className="flex items-center gap-2 mt-1 text-sm text-slate-500">
-                <Mail className="h-3.5 w-3.5" />
-                {user?.email}
-              </div>
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                <Badge variant="secondary" className="gap-1">
-                  <Scale className="h-3 w-3" />
-                  Abogado
-                </Badge>
-                {prof.rating > 0 && (
-                  <Badge variant="warning" className="gap-1">
-                    <Star className="h-3 w-3 fill-amber-400" />
-                    {prof.rating} / 5.0
-                  </Badge>
-                )}
-                {prof.resolved_cases > 0 && (
-                  <Badge variant="info" className="gap-1">
-                    <Briefcase className="h-3 w-3" />
-                    {prof.resolved_cases} casos
-                  </Badge>
-                )}
-                {prof.years_experience > 0 && (
-                  <Badge variant="secondary" className="gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {prof.years_experience} años exp.
-                  </Badge>
-                )}
-                {prof.cab && (
-                  <Badge variant="secondary" className="gap-1">
-                    <Award className="h-3 w-3" />
-                    CAB: {prof.cab}
-                  </Badge>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ProfileHeader
+        name={user?.name ?? ""}
+        email={user?.email ?? ""}
+        avatarUrl={displayAvatar ?? null}
+        bannerGradient="from-slate-900 via-slate-800 to-slate-700"
+        avatarFallbackClass="bg-slate-800"
+        fileInputRef={avatar.fileInputRef}
+        uploading={avatar.uploading}
+        onFileChange={avatar.handleChange}
+        onPickerOpen={avatar.openPicker}
+        badges={
+          <>
+            <Badge variant="secondary" className="gap-1">
+              <Scale className="h-3 w-3" />
+              Abogado
+            </Badge>
+            {prof.rating > 0 && (
+              <Badge variant="warning" className="gap-1">
+                <Star className="h-3 w-3 fill-amber-400" />
+                {prof.rating} / 5.0
+              </Badge>
+            )}
+            {prof.resolved_cases > 0 && (
+              <Badge variant="info" className="gap-1">
+                <Briefcase className="h-3 w-3" />
+                {prof.resolved_cases} casos
+              </Badge>
+            )}
+            {prof.years_experience > 0 && (
+              <Badge variant="secondary" className="gap-1">
+                <Calendar className="h-3 w-3" />
+                {prof.years_experience} años exp.
+              </Badge>
+            )}
+            {prof.cab && (
+              <Badge variant="secondary" className="gap-1">
+                <Award className="h-3 w-3" />
+                CAB: {prof.cab}
+              </Badge>
+            )}
+          </>
+        }
+      />
 
       {/* ─── Formulario ─── */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -407,18 +319,7 @@ export default function LawyerProfilePage() {
 
         {/* Feedback + Save */}
         <div className="space-y-3">
-          {saveError && (
-            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
-              {saveError}
-            </p>
-          )}
-
-          {saveSuccess && (
-            <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-md px-3 py-2">
-              <CheckCircle className="h-4 w-4" />
-              Perfil actualizado correctamente
-            </div>
-          )}
+          <SaveFeedback error={saveError} success={saveSuccess} />
 
           <div className="flex justify-end">
             <Button
