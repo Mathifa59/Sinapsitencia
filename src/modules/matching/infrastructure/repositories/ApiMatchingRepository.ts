@@ -12,11 +12,12 @@ import type {
   DoctorProfileEntity,
 } from "../../domain/entities/matching.entity";
 
-// Raw types from API
+// Raw types from API — must match the shape returned by the API routes
 interface LawyerProfileRaw {
   id: string;
   userId: string;
-  user: { email: string; name: string };
+  fullName: string;
+  email: string;
   cab: string;
   specialties: string[];
   yearsExperience: number;
@@ -24,13 +25,14 @@ interface LawyerProfileRaw {
   bio?: string;
   available: boolean;
   rating: number;
-  casesHandled: number;
+  resolvedCases?: number;
 }
 
 interface DoctorProfileRaw {
   id: string;
   userId: string;
-  user: { email: string; name: string };
+  fullName: string;
+  email: string;
   cmp: string;
   specialty: string;
   hospital: string;
@@ -42,11 +44,15 @@ interface DoctorProfileRaw {
 interface RecommendationRaw {
   id: string;
   doctorId: string;
-  lawyerId: string;
   lawyer: LawyerProfileRaw;
   score: number;
   reasons: string[];
   createdAt: string;
+}
+
+interface RecommendationsResponse {
+  recommendations: RecommendationRaw[];
+  modelInfo: Record<string, unknown>;
 }
 
 interface ContactRequestRaw {
@@ -55,8 +61,7 @@ interface ContactRequestRaw {
   fromDoctor: DoctorProfileRaw;
   toLawyerId: string;
   toLawyer: LawyerProfileRaw;
-  caseId?: string;
-  case?: { title: string };
+  caseTitle?: string;
   status: ContactRequestStatus;
   message: string;
   responseMessage?: string;
@@ -68,8 +73,8 @@ function toLawyerEntity(raw: LawyerProfileRaw): LawyerProfileEntity {
   return {
     id: raw.id,
     userId: raw.userId,
-    fullName: raw.user.name,
-    email: raw.user.email,
+    fullName: raw.fullName,
+    email: raw.email,
     cab: raw.cab,
     specialties: raw.specialties,
     yearsExperience: raw.yearsExperience,
@@ -77,7 +82,7 @@ function toLawyerEntity(raw: LawyerProfileRaw): LawyerProfileEntity {
     bio: raw.bio,
     available: raw.available,
     rating: raw.rating,
-    casesHandled: raw.casesHandled,
+    casesHandled: raw.resolvedCases ?? 0,
   };
 }
 
@@ -85,8 +90,8 @@ function toDoctorEntity(raw: DoctorProfileRaw): DoctorProfileEntity {
   return {
     id: raw.id,
     userId: raw.userId,
-    fullName: raw.user.name,
-    email: raw.user.email,
+    fullName: raw.fullName,
+    email: raw.email,
     cmp: raw.cmp,
     specialty: raw.specialty,
     hospital: raw.hospital,
@@ -114,8 +119,7 @@ function toContactRequest(raw: ContactRequestRaw): ContactRequestEntity {
     fromDoctor: toDoctorEntity(raw.fromDoctor),
     toLawyerId: raw.toLawyerId,
     toLawyer: toLawyerEntity(raw.toLawyer),
-    caseId: raw.caseId,
-    caseTitle: raw.case?.title,
+    caseTitle: raw.caseTitle,
     status: raw.status,
     message: raw.message,
     responseMessage: raw.responseMessage,
@@ -126,8 +130,8 @@ function toContactRequest(raw: ContactRequestRaw): ContactRequestEntity {
 
 export class ApiMatchingRepository implements IMatchingRepository {
   async getRecommendationsForDoctor(doctorId: string): Promise<MatchRecommendationEntity[]> {
-    const data = await apiFetch<RecommendationRaw[]>(`/api/matching/lawyers?doctorId=${doctorId}`);
-    return data.map(toRecommendation);
+    const data = await apiFetch<RecommendationsResponse>(`/api/matching/lawyers?doctorId=${doctorId}`);
+    return data.recommendations.map(toRecommendation);
   }
 
   async getLawyerProfiles(): Promise<LawyerProfileEntity[]> {

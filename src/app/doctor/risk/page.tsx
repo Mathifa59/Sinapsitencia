@@ -33,7 +33,7 @@ const riskSchema = z.object({
   informed_consent: z.boolean(),
   has_prior_complaints: z.boolean(),
   time_since_incident_days: z
-    .number({ invalid_type_error: "Ingresa un número válido" })
+    .number({ error: "Ingresa un número válido" })
     .int()
     .min(0)
     .optional()
