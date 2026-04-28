@@ -1,0 +1,252 @@
+<mxfile host="app.diagrams.net" agent="Claude">
+  <diagram name="Arquitectura Fisica - Sinapsistencia" id="phys-arch-sinap">
+    <mxGraphModel dx="2457" dy="1329" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#0F172A;strokeColor=none;fillColor=none" value="Arquitectura Fisica - Sinapsistencia" vertex="1">
+          <mxGeometry height="32" width="1620" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=2;fontColor=#475569;strokeColor=none;fillColor=none" value="UPC - TP1 - Despliegue cloud multi-proveedor: Vercel (Next.js BFF) + Supabase (datos) + Railway (FastAPI ML) + n8n (automatizacion)" vertex="1">
+          <mxGeometry height="22" width="1620" x="40" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="u_doctor" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;html=1;outlineConnect=0;fillColor=#185FA5;strokeColor=#0F172A;fontColor=#0F172A;fontSize=11;fontStyle=1" value="MEDICO&#xa;Navegador web" vertex="1">
+          <mxGeometry height="80" width="60" x="60" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="u_lawyer" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;html=1;outlineConnect=0;fillColor=#185FA5;strokeColor=#0F172A;fontColor=#0F172A;fontSize=11;fontStyle=1" value="ABOGADO&#xa;Navegador web" vertex="1">
+          <mxGeometry height="80" width="60" x="60" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="u_admin" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;html=1;outlineConnect=0;fillColor=#185FA5;strokeColor=#0F172A;fontColor=#0F172A;fontSize=11;fontStyle=1" value="ADMIN&#xa;Navegador web" vertex="1">
+          <mxGeometry height="80" width="60" x="60" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="u_dev" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;html=1;outlineConnect=0;fillColor=#7C3AED;strokeColor=#4C1D95;fontColor=#0F172A;fontSize=11;fontStyle=1" value="DESARROLLADOR&#xa;Git push" vertex="1">
+          <mxGeometry height="80" width="60" x="60" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud_vercel" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#000000;fontSize=11;fontStyle=1;align=right;verticalAlign=top;spacingRight=14;spacingTop=8;strokeWidth=2;fontColor=#0F172A" value="VERCEL  -  Edge Network global" vertex="1">
+          <mxGeometry height="490" width="340" x="200" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel_subnet" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;fontSize=10;fontStyle=2;align=right;verticalAlign=top;spacingRight=10;spacingTop=5;dashed=1;dashPattern=8 4;strokeWidth=1.5;fontColor=#1E40AF" value="Edge Network - Publica" vertex="1">
+          <mxGeometry height="430" width="300" x="220" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel_cdn" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=10;fontColor=#0F172A;strokeWidth=1.5" value="CDN / Edge&#xa;Estaticos + cache global&#xa;HTTPS - TLS 1.3" vertex="1">
+          <mxGeometry height="65" width="260" x="240" y="195" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel_app" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=10;fontColor=#0F172A;strokeWidth=1.5" value="Next.js 16 App (React 19)&#xa;App Router + TypeScript&#xa;Server Components + SSR" vertex="1">
+          <mxGeometry height="70" width="260" x="240" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel_api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=10;fontColor=#0F172A;strokeWidth=1.5" value="API Routes / BFF&#xa;/api/auth, /api/legal-cases&#xa;/api/documents, /api/matching, /api/audit" vertex="1">
+          <mxGeometry height="80" width="260" x="240" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel_env" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=10;fontColor=#0F172A;strokeWidth=1.5" value="Environment Variables&#xa;NEXT_PUBLIC_SUPABASE_URL&#xa;SUPABASE_SERVICE_ROLE_KEY&#xa;NEXT_PUBLIC_API_URL (FastAPI)&#xa;N8N_WEBHOOK_URL" vertex="1">
+          <mxGeometry height="115" width="260" x="240" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud_supabase" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#3ECF8E;fontSize=11;fontStyle=1;align=right;verticalAlign=top;spacingRight=14;spacingTop=8;strokeWidth=2;fontColor=#064E3B" value="SUPABASE  -  Plataforma Backend (us-east-1)" vertex="1">
+          <mxGeometry height="600" width="560" x="600" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_public" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;fontSize=10;fontStyle=2;align=right;verticalAlign=top;spacingRight=10;spacingTop=5;dashed=1;dashPattern=8 4;strokeWidth=1.5;fontColor=#1E40AF" value="Subred Publica - API Gateway" vertex="1">
+          <mxGeometry height="525" width="250" x="620" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_auth" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Auth (GoTrue)&#xa;JWT + sesion + RLS&#xa;@supabase/ssr cookies" vertex="1">
+          <mxGeometry height="70" width="210" x="640" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_apigw" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="PostgREST API&#xa;Auto-generada del schema&#xa;de Postgres" vertex="1">
+          <mxGeometry height="70" width="210" x="640" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_realtime" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Realtime&#xa;WebSocket + WAL&#xa;Suscripciones live" vertex="1">
+          <mxGeometry height="65" width="210" x="640" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_storage" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Storage (S3-compat)&#xa;Documentos clinicos&#xa;Consentimientos firmados (PDF)" vertex="1">
+          <mxGeometry height="75" width="210" x="640" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_edge" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Edge Functions (Deno)&#xa;Hooks de auditoria&#xa;Triggers post-insert" vertex="1">
+          <mxGeometry height="65" width="210" x="640" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_logs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Logs / Observability&#xa;Auth + DB + Storage" vertex="1">
+          <mxGeometry height="55" width="210" x="640" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_private" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A32D2D;fontSize=10;fontStyle=2;align=right;verticalAlign=top;spacingRight=10;spacingTop=5;dashed=1;dashPattern=8 4;strokeWidth=1.5;fontColor=#7F1D1D" value="Subred Privada - Datos" vertex="1">
+          <mxGeometry height="525" width="250" x="890" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_postgres" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#DBEAFE;strokeColor=#1E40AF;fontSize=10;fontColor=#0F172A;strokeWidth=1.5" value="Postgres 15&#xa;BD principal Sinapsistencia&#xa;users, doctor_profiles,&#xa;lawyer_profiles, patients,&#xa;legal_cases, documents,&#xa;contact_requests, audit_logs" vertex="1">
+          <mxGeometry height="135" width="210" x="910" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_pooler" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="PgBouncer Pooler&#xa;Pool de conexiones" vertex="1">
+          <mxGeometry height="55" width="210" x="910" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_rls" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Row Level Security&#xa;Policies por rol&#xa;(doctor / lawyer / admin)" vertex="1">
+          <mxGeometry height="65" width="210" x="910" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_backup" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Backups Automaticos&#xa;PITR - 7 dias&#xa;Daily snapshots" vertex="1">
+          <mxGeometry height="65" width="210" x="910" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_migrations" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Migrations / SQL schema&#xa;Tablas + triggers + policies" vertex="1">
+          <mxGeometry height="55" width="210" x="910" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud_railway" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;fontSize=11;fontStyle=1;align=right;verticalAlign=top;spacingRight=14;spacingTop=8;strokeWidth=2;fontColor=#4C1D95" value="RAILWAY  -  ML Service" vertex="1">
+          <mxGeometry height="430" width="340" x="1220" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="rw_subnet" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A32D2D;fontSize=10;fontStyle=2;align=right;verticalAlign=top;spacingRight=10;spacingTop=5;dashed=1;dashPattern=8 4;strokeWidth=1.5;fontColor=#7F1D1D" value="Container - Privado" vertex="1">
+          <mxGeometry height="370" width="300" x="1240" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="rw_lb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="Load Balancer + HTTPS&#xa;Auto-scaling - Health checks" vertex="1">
+          <mxGeometry height="55" width="260" x="1260" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="rw_fastapi" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="FastAPI Container (Dockerfile)&#xa;Python 3.11 + Uvicorn&#xa;Routers: /health, /api/v1&#xa;Endpoints: /recommendations,&#xa;/risk-assessment, /train,&#xa;/train-from-supabase, /model/info" vertex="1">
+          <mxGeometry height="125" width="260" x="1260" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="rw_volume" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="Volume - artifacts/&#xa;tfidf.pkl, svd.pkl,&#xa;lawyers_hybrid.pkl,&#xa;doctor_factors.pkl,&#xa;scaler_*.pkl, lawyer_index.pkl" vertex="1">
+          <mxGeometry height="105" width="260" x="1260" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud_n8n" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;fontSize=11;fontStyle=1;align=right;verticalAlign=top;spacingRight=14;spacingTop=8;strokeWidth=2;fontColor=#7C2D12" value="n8n CLOUD  -  Automation" vertex="1">
+          <mxGeometry height="240" width="340" x="1220" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_webhook" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="Webhook /risk-alert&#xa;Recibe POST con riskLevel" vertex="1">
+          <mxGeometry height="55" width="300" x="1240" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_workflow" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="Workflow: Alerta Riesgo Alto&#xa;IF (alto/critico) -&gt; emailSend&#xa;+ httpRequest a Supabase (audit)" vertex="1">
+          <mxGeometry height="65" width="300" x="1240" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_smtp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="SMTP node - Email a director&#xa;y administrador del hospital" vertex="1">
+          <mxGeometry height="40" width="300" x="1240" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud_external" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#92400E;fontSize=11;fontStyle=1;align=right;verticalAlign=top;spacingRight=14;spacingTop=8;strokeWidth=2;fontColor=#451A03" value="&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp; " vertex="1">
+          <mxGeometry height="240" width="1000" x="200" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_github_fe" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="GitHub repo: Sinapsitencia&#xa;(Next.js + n8n workflow)" vertex="1">
+          <mxGeometry height="60" width="220" x="220" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_github_ml" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="GitHub repo: Sinapsistencia ML&#xa;(FastAPI + Dockerfile)" vertex="1">
+          <mxGeometry height="60" width="220" x="220" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_actions" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="GitHub Actions / CI&#xa;Lint + build + tests" vertex="1">
+          <mxGeometry height="60" width="220" x="480" y="855" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_resend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="Resend / SMTP&#xa;Envio de correos&#xa;(via n8n)" vertex="1">
+          <mxGeometry height="60" width="220" x="740" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_dns" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="Cloudflare DNS&#xa;sinapsistencia.upc.edu.pe" vertex="1">
+          <mxGeometry height="60" width="220" x="740" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_analytics" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="Vercel Analytics + Logs&#xa;Web Vitals + Runtime logs" vertex="1">
+          <mxGeometry height="60" width="200" x="980" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_sentry" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="Sentry (opcional)&#xa;Errores FE + ML" vertex="1">
+          <mxGeometry height="60" width="200" x="980" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="e_doc_cdn" edge="1" parent="1" source="u_doctor" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#185FA5;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#185FA5;fontStyle=1" target="vercel_cdn" value="HTTPS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_law_cdn" edge="1" parent="1" source="u_lawyer" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#185FA5;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#185FA5;fontStyle=1" target="vercel_cdn" value="HTTPS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_adm_cdn" edge="1" parent="1" source="u_admin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#185FA5;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#185FA5;fontStyle=1" target="vercel_cdn" value="HTTPS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cdn_app" edge="1" parent="1" source="vercel_cdn" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="vercel_app" value="cache miss">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_app_api" edge="1" parent="1" source="vercel_app" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="vercel_api" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_auth" edge="1" parent="1" source="vercel_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#16A34A;fontStyle=1" target="sb_auth" value="Auth (cookies + JWT)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_pgrest" edge="1" parent="1" source="vercel_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#16A34A;fontStyle=1" target="sb_apigw" value="REST + service-role key">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_app_realtime" edge="1" parent="1" source="vercel_app" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="sb_realtime" value="WebSocket">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_storage" edge="1" parent="1" source="vercel_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#16A34A;fontStyle=1" target="sb_storage" value="S3 API (PDFs)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pgrest_pool" edge="1" parent="1" source="sb_apigw" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="sb_pooler" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pool_pg" edge="1" parent="1" source="sb_pooler" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="sb_postgres" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_auth_pg" edge="1" parent="1" source="sb_auth" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="sb_postgres" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pg_rls" edge="1" parent="1" source="sb_postgres" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="sb_rls" value="enforces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pg_back" edge="1" parent="1" source="sb_postgres" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="sb_backup" value="snapshot">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pg_log" edge="1" parent="1" source="sb_postgres" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="sb_logs" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_realtime_pg" edge="1" parent="1" source="sb_realtime" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="sb_postgres" value="WAL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pg_mig" edge="1" parent="1" source="sb_migrations" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="sb_postgres" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_lb" edge="1" parent="1" source="vercel_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="rw_lb" value="HTTPS REST&#xa;/api/v1/recommendations&#xa;/api/v1/risk-assessment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_lb_fa" edge="1" parent="1" source="rw_lb" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="rw_fastapi" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_fa_vol" edge="1" parent="1" source="rw_fastapi" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="rw_volume" value="load .pkl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_fa_pg" edge="1" parent="1" source="rw_fastapi" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="sb_apigw" value="train-from-supabase&#xa;(lee lawyer_profiles,&#xa;contact_requests)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_n8n" edge="1" parent="1" source="vercel_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EA580C;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#EA580C;fontStyle=1" target="n8n_webhook" value="POST /risk-alert&#xa;(payload riskLevel)">
+          <mxGeometry relative="1" x="0.086" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_n8n_flow" edge="1" parent="1" source="n8n_webhook" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="n8n_workflow" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n8n_smtp" edge="1" parent="1" source="n8n_workflow" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="n8n_smtp" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n8n_audit" edge="1" parent="1" source="n8n_workflow" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="sb_apigw" value="HTTP audit_logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_smtp_resend" edge="1" parent="1" source="n8n_smtp" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="ext_resend" value="SMTP">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dev_gh1" edge="1" parent="1" source="u_dev" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="ext_github_fe" value="git push (FE)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dev_gh2" edge="1" parent="1" source="u_dev" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="ext_github_ml" value="git push (ML)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_gh_actions" edge="1" parent="1" source="ext_github_fe" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="ext_actions" value="trigger">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_gh_actions2" edge="1" parent="1" source="ext_github_ml" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="ext_actions" value="trigger">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_act_vercel" edge="1" parent="1" source="ext_actions" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="vercel_app" value="deploy FE">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_act_railway" edge="1" parent="1" source="ext_actions" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="rw_fastapi" value="deploy ML (Docker)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dns_cdn" edge="1" parent="1" source="ext_dns" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="vercel_cdn" value="DNS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_app_anal" edge="1" parent="1" source="vercel_app" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="ext_analytics" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_app_sentry" edge="1" parent="1" source="vercel_app" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="ext_sentry" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_fa_sentry" edge="1" parent="1" source="rw_fastapi" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="ext_sentry" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontSize=9;fontColor=#0F172A;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" value="LEYENDA&#xa;&#xa;___ HTTPS publico (azul)&#xa;___ REST API datos (verde)&#xa;___ ML / inferencia (violeta)&#xa;___ Automatizacion n8n (naranja)&#xa;.... Async / monitoreo&#xa;&#xa;Subred publica (azul punteado)&#xa;Subred privada (rojo punteado)" vertex="1">
+          <mxGeometry height="240" width="130" x="1480" y="830" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

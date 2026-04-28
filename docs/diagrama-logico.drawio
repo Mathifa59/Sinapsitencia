@@ -1,0 +1,265 @@
+<mxfile host="app.diagrams.net" agent="Claude">
+  <diagram name="Arquitectura Logica - Sinapsistencia" id="log-arch-sinap">
+    <mxGraphModel dx="1885" dy="1036" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#0F172A;strokeColor=none;fillColor=none" value="Arquitectura Logica - Sinapsistencia" vertex="1">
+          <mxGeometry height="32" width="1620" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=2;fontColor=#475569;strokeColor=none;fillColor=none" value="UPC - TP1 - Capas: Presentacion (Next.js) | API/BFF | Dominio DDD | Datos (Supabase) | ML (FastAPI) | Automatizacion (n8n)" vertex="1">
+          <mxGeometry height="22" width="1620" x="40" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_users" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E40AF;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;strokeWidth=2;fontColor=#0F172A" value="USUARIOS" vertex="1">
+          <mxGeometry height="240" width="280" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="usr_doctor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;fontSize=10;fontColor=#0F172A;strokeWidth=1.5" value="MEDICO&#xa;Crea casos, sube documentos,&#xa;busca abogados, envia&#xa;solicitudes de contacto" vertex="1">
+          <mxGeometry height="55" width="250" x="55" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="usr_lawyer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;fontSize=10;fontColor=#0F172A;strokeWidth=1.5" value="ABOGADO&#xa;Revisa solicitudes,&#xa;acepta/rechaza casos,&#xa;gestiona perfil legal" vertex="1">
+          <mxGeometry height="55" width="250" x="55" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="usr_admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;fontSize=10;fontColor=#0F172A;strokeWidth=1.5" value="ADMIN&#xa;Supervisa usuarios,&#xa;pacientes, documentos,&#xa;auditoria del sistema" vertex="1">
+          <mxGeometry height="65" width="250" x="55" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_present" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;strokeWidth=2;fontColor=#075985" value="CAPA DE PRESENTACION  -  Next.js 16 App Router (React 19 + TypeScript)" vertex="1">
+          <mxGeometry height="240" width="1300" x="360" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_doctor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontSize=10;fontColor=#075985;strokeWidth=1.5" value="Portal Medico (/doctor/*)&#xa;dashboard, cases, cases/[id],&#xa;documents, lawyers, profile" vertex="1">
+          <mxGeometry height="80" width="240" x="380" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_lawyer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontSize=10;fontColor=#075985;strokeWidth=1.5" value="Portal Abogado (/lawyer/*)&#xa;dashboard, requests,&#xa;doctors, profile" vertex="1">
+          <mxGeometry height="80" width="240" x="640" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_admin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontSize=10;fontColor=#075985;strokeWidth=1.5" value="Panel Admin (/admin/*)&#xa;dashboard, users, patients,&#xa;episodes, documents, audit" vertex="1">
+          <mxGeometry height="80" width="240" x="900" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_public" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;fontSize=10;fontColor=#075985;strokeWidth=1.5" value="Publico (/, /login, /register)&#xa;Landing + auth UI" vertex="1">
+          <mxGeometry height="80" width="240" x="1160" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_state" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;fontSize=10;fontColor=#075985;strokeWidth=1;dashed=1" value="Stores Zustand: useAuthStore (sesion + persist), useUIStore (sidebar) | TanStack Query v5 (cache + loading/error) | React Hook Form + Zod (validacion)" vertex="1">
+          <mxGeometry height="40" width="1020" x="380" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_components" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;fontSize=10;fontColor=#075985;strokeWidth=1;dashed=1" value="Componentes UI: Tailwind 4 + CVA + Radix UI (Dialog, Avatar, Tabs, Dropdown, Select, Tooltip) - Lucide icons" vertex="1">
+          <mxGeometry height="40" width="1020" x="380" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#92400E;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;strokeWidth=2;fontColor=#451A03" value="CAPA API / BFF  -  Next.js Route Handlers (/src/app/api/*)" vertex="1">
+          <mxGeometry height="120" width="1300" x="360" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="api_auth" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="/api/auth&#xa;login, logout, me, register" vertex="1">
+          <mxGeometry height="65" width="190" x="380" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="api_cases" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="/api/legal-cases&#xa;CRUD casos" vertex="1">
+          <mxGeometry height="65" width="190" x="590" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="api_docs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="/api/documents&#xa;CRUD + Storage" vertex="1">
+          <mxGeometry height="65" width="190" x="800" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="api_match" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="/api/matching&#xa;contact-requests" vertex="1">
+          <mxGeometry height="65" width="190" x="1010" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="api_audit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#92400E;fontSize=10;fontColor=#451A03;strokeWidth=1.5" value="/api/audit&#xa;Lectura logs" vertex="1">
+          <mxGeometry height="65" width="180" x="1220" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="api_proxy_ml" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF9C3;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="ML proxy&#xa;-&gt; FastAPI" vertex="1">
+          <mxGeometry height="65" width="220" x="1420" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_domain" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#6D28D9;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;strokeWidth=2;fontColor=#4C1D95" value="CAPA DE DOMINIO  -  DDD por modulos (/src/modules/*) - Use Cases + Repositorios (interfaces)" vertex="1">
+          <mxGeometry height="220" width="1300" x="360" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_auth" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6D28D9;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="auth&#xa;SessionEntity, UserEntity&#xa;login, logout, getMe" vertex="1">
+          <mxGeometry height="80" width="190" x="380" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_cases" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6D28D9;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="cases&#xa;LegalCaseEntity&#xa;findByDoctorId, create,&#xa;updateStatus, assignLawyer" vertex="1">
+          <mxGeometry height="80" width="190" x="590" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_docs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6D28D9;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="documents&#xa;DocumentEntity&#xa;versiones + firmas" vertex="1">
+          <mxGeometry height="80" width="190" x="800" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_match" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6D28D9;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="matching&#xa;MatchRecommendation,&#xa;ContactRequest" vertex="1">
+          <mxGeometry height="80" width="190" x="1010" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_audit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6D28D9;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="audit / users / patients&#xa;AuditLog, User, Patient&#xa;CRUD admin" vertex="1">
+          <mxGeometry height="80" width="190" x="1220" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_di" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#6D28D9;fontSize=10;fontColor=#4C1D95;strokeWidth=1;dashed=1" value="Inversion de dependencias - /src/infrastructure/di/container.ts (Mock*Repository hoy / Api*Repository manana)" vertex="1">
+          <mxGeometry height="35" width="1030" x="380" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_http" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#6D28D9;fontSize=10;fontColor=#4C1D95;strokeWidth=1;dashed=1" value="apiClient (/src/infrastructure/http/api-client.ts) - cliente HTTP base, NEXT_PUBLIC_API_URL, supabase-js (browser), @supabase/ssr (server)" vertex="1">
+          <mxGeometry height="35" width="1030" x="380" y="675" as="geometry" />
+        </mxCell>
+        <mxCell id="mod_ml_client" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE8FF;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="ML client&#xa;repository hacia&#xa;FastAPI" vertex="1">
+          <mxGeometry height="80" width="220" x="1420" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_data" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#15803D;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;strokeWidth=2;fontColor=#064E3B" value="CAPA DE DATOS  -  Supabase (Postgres + Auth + Storage)" vertex="1">
+          <mxGeometry height="260" width="900" x="360" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="data_users" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#DCFCE7;strokeColor=#15803D;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="users + doctor_profiles +&#xa;lawyer_profiles&#xa;PK id (uuid), role,&#xa;cmp/colegio, especialidad" vertex="1">
+          <mxGeometry height="100" width="200" x="380" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="data_patients" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#DCFCE7;strokeColor=#15803D;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="patients&#xa;PK id, dni, nombre,&#xa;edad, contacto" vertex="1">
+          <mxGeometry height="100" width="200" x="600" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="data_cases" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#DCFCE7;strokeColor=#15803D;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="legal_cases&#xa;PK id, doctor_id, lawyer_id,&#xa;patient_id, status, priority,&#xa;risk_score, risk_level" vertex="1">
+          <mxGeometry height="100" width="200" x="820" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="data_docs" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#DCFCE7;strokeColor=#15803D;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="documents&#xa;PK id, case_id,&#xa;version, signed_at,&#xa;storage_path" vertex="1">
+          <mxGeometry height="100" width="200" x="1040" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="data_contact" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#DCFCE7;strokeColor=#15803D;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="contact_requests&#xa;doctor_id, lawyer_id,&#xa;status, message" vertex="1">
+          <mxGeometry height="80" width="200" x="380" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="data_audit" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#DCFCE7;strokeColor=#15803D;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="audit_logs&#xa;actor_id, entity, action,&#xa;timestamp, payload" vertex="1">
+          <mxGeometry height="80" width="200" x="600" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="data_storage" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#15803D;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Storage Bucket&#xa;documents/, consents/&#xa;PDFs firmados" vertex="1">
+          <mxGeometry height="80" width="200" x="820" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="data_rls" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#15803D;fontSize=10;fontColor=#064E3B;strokeWidth=1.5" value="Auth (GoTrue) + RLS&#xa;Policies por rol&#xa;JWT + cookies SSR" vertex="1">
+          <mxGeometry height="80" width="200" x="1040" y="895" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_ml" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;strokeWidth=2;fontColor=#4C1D95" value="CAPA ML  -  Sinapsistencia ML (FastAPI - Python 3.11)" vertex="1">
+          <mxGeometry height="260" width="380" x="1280" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="ml_routes" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="Routers FastAPI&#xa;/health  /api/v1/recommendations&#xa;/api/v1/risk-assessment&#xa;/api/v1/train  /train-from-supabase&#xa;/api/v1/model/info" vertex="1">
+          <mxGeometry height="90" width="340" x="1300" y="775" as="geometry" />
+        </mxCell>
+        <mxCell id="ml_recommender" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="RecommenderService&#xa;Content (TF-IDF + coseno)&#xa;Collaborative (SVD)&#xa;Hybrid + explicabilidad" vertex="1">
+          <mxGeometry height="75" width="165" x="1300" y="875" as="geometry" />
+        </mxCell>
+        <mxCell id="ml_risk" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1.5" value="RiskAssessment&#xa;factores ponderados&#xa;(esp, complejidad,&#xa;documentacion, historial)" vertex="1">
+          <mxGeometry height="75" width="165" x="1475" y="875" as="geometry" />
+        </mxCell>
+        <mxCell id="ml_artifacts" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;fontSize=10;fontColor=#4C1D95;strokeWidth=1;dashed=1" value="artifacts/*.pkl - tfidf, svd, hybrid, factors, scalers, indices" vertex="1">
+          <mxGeometry height="30" width="340" x="1300" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="layer_n8n" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;fontSize=11;fontStyle=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;strokeWidth=2;fontColor=#7C2D12" value="AUTOMATIZACION - n8n (workflow alerta-riesgo-alto)" vertex="1">
+          <mxGeometry height="500" width="280" x="40" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_wh" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="Webhook&#xa;POST /risk-alert" vertex="1">
+          <mxGeometry height="55" width="240" x="60" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_if" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="IF nodo&#xa;riskLevel == alto OR critico" vertex="1">
+          <mxGeometry height="55" width="240" x="60" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_set" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="Set / Format&#xa;construye payload del email" vertex="1">
+          <mxGeometry height="55" width="240" x="60" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_email" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="emailSend (SMTP)&#xa;Aviso a director medico&#xa;y administrador" vertex="1">
+          <mxGeometry height="60" width="240" x="60" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_http" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="httpRequest&#xa;-&gt; Supabase audit_logs&#xa;(POST con risk-alert event)" vertex="1">
+          <mxGeometry height="65" width="240" x="60" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="n8n_email2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#EA580C;fontSize=10;fontColor=#7C2D12;strokeWidth=1.5" value="emailSend (resumen)&#xa;Cierre del flujo + noOp" vertex="1">
+          <mxGeometry height="55" width="240" x="60" y="905" as="geometry" />
+        </mxCell>
+        <mxCell id="e_doctor_ui" edge="1" parent="1" source="usr_doctor" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#185FA5;strokeWidth=2;endArrow=classic;endFill=1" target="ui_doctor" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_lawyer_ui" edge="1" parent="1" source="usr_lawyer" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#185FA5;strokeWidth=2;endArrow=classic;endFill=1" target="ui_lawyer" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_ui" edge="1" parent="1" source="usr_admin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#185FA5;strokeWidth=2;endArrow=classic;endFill=1" target="ui_admin" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ui_api1" edge="1" parent="1" source="ui_doctor" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1;fontSize=9;fontColor=#475569" target="api_cases" value="hooks (TanStack Query)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ui_api2" edge="1" parent="1" source="ui_lawyer" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1" target="api_match" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ui_api3" edge="1" parent="1" source="ui_admin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1" target="api_audit" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ui_auth" edge="1" parent="1" source="ui_public" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1" target="api_auth" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ui_docs" edge="1" parent="1" source="ui_doctor" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#475569;strokeWidth=1.5;endArrow=classic;endFill=1" target="api_docs" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_auth_mod" edge="1" parent="1" source="api_auth" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6D28D9;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#6D28D9" target="mod_auth" value="use case">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_cases_mod" edge="1" parent="1" source="api_cases" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6D28D9;strokeWidth=2;endArrow=classic;endFill=1" target="mod_cases" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_docs_mod" edge="1" parent="1" source="api_docs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6D28D9;strokeWidth=2;endArrow=classic;endFill=1" target="mod_docs" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_match_mod" edge="1" parent="1" source="api_match" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6D28D9;strokeWidth=2;endArrow=classic;endFill=1" target="mod_match" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_audit_mod" edge="1" parent="1" source="api_audit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#6D28D9;strokeWidth=2;endArrow=classic;endFill=1" target="mod_audit" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_ml" edge="1" parent="1" source="api_proxy_ml" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="mod_ml_client" value="recomendar / risk">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mod_data1" edge="1" parent="1" source="mod_auth" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#15803D;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#15803D;fontStyle=1" target="data_users" value="supabase-js">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mod_data2" edge="1" parent="1" source="mod_cases" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#15803D;strokeWidth=2;endArrow=classic;endFill=1" target="data_cases" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mod_data3" edge="1" parent="1" source="mod_docs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#15803D;strokeWidth=2;endArrow=classic;endFill=1" target="data_docs" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mod_data3b" edge="1" parent="1" source="mod_docs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#15803D;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#15803D" target="data_storage" value="upload">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mod_data4" edge="1" parent="1" source="mod_match" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#15803D;strokeWidth=2;endArrow=classic;endFill=1" target="data_contact" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mod_data5" edge="1" parent="1" source="mod_audit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#15803D;strokeWidth=2;endArrow=classic;endFill=1" target="data_audit" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_auth_rls" edge="1" parent="1" source="mod_auth" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="data_rls" value="enforce RLS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ml_routes_rec" edge="1" parent="1" source="ml_routes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1" target="ml_recommender" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ml_routes_risk" edge="1" parent="1" source="ml_routes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1" target="ml_risk" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ml_rec_art" edge="1" parent="1" source="ml_recommender" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="ml_artifacts" value="load">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ml_risk_art" edge="1" parent="1" source="ml_risk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#94A3B8;strokeWidth=1.5;endArrow=classic;endFill=1;dashed=1;dashPattern=6 4;fontSize=9;fontColor=#475569" target="ml_artifacts" value="load">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mlclient_routes" edge="1" parent="1" source="mod_ml_client" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#7C3AED;fontStyle=1" target="ml_routes" value="HTTPS REST">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ml_train_pg" edge="1" parent="1" source="ml_recommender" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#15803D;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#15803D" target="data_users" value="train-from-supabase&#xa;(lee lawyer_profiles)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_n8n" edge="1" parent="1" source="api_proxy_ml" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EA580C;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#EA580C;fontStyle=1" target="n8n_wh" value="trigger&#xa;(risk alto)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n8n_chain1" edge="1" parent="1" source="n8n_wh" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EA580C;strokeWidth=2;endArrow=classic;endFill=1" target="n8n_if" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n8n_chain2" edge="1" parent="1" source="n8n_if" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EA580C;strokeWidth=2;endArrow=classic;endFill=1" target="n8n_set" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n8n_chain3" edge="1" parent="1" source="n8n_set" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EA580C;strokeWidth=2;endArrow=classic;endFill=1" target="n8n_email" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n8n_chain4" edge="1" parent="1" source="n8n_email" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EA580C;strokeWidth=2;endArrow=classic;endFill=1" target="n8n_http" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n8n_chain5" edge="1" parent="1" source="n8n_http" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#EA580C;strokeWidth=2;endArrow=classic;endFill=1" target="n8n_email2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_n8n_audit_db" edge="1" parent="1" source="n8n_http" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#15803D;strokeWidth=2;endArrow=classic;endFill=1;fontSize=9;fontColor=#15803D" target="data_audit" value="POST audit_logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;fontSize=9;fontColor=#0F172A;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" value="LEYENDA&#xa;&#xa;Azul - Presentacion (Next.js)&#xa;Amarillo - API/BFF (Route Handlers)&#xa;Violeta - Dominio DDD + ML&#xa;Verde - Datos (Supabase)&#xa;Naranja - Automatizacion n8n&#xa;&#xa;___ Flujo principal&#xa;.... Async / monitoreo / carga" vertex="1">
+          <mxGeometry height="120" width="280" x="1475" y="160" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
